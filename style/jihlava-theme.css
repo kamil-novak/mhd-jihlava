@@ -1,0 +1,470 @@
+/* VARIABLES --- */
+:root {
+    /* Font */
+    --font-family-one: Roboto;
+    --font-size-one: 14px;
+    /* Colors */
+    --color-one: #CA1517;
+    --color-two: #e7181c;
+    --color-three: #FFFFFF;
+    --color-four: #666666;
+    --color-five: #D3D3D3;
+    --color-six: #151515;
+    /* Problem panel width on desktop */
+    --panel-width: 650px;
+    /* Others */
+    --title-bar-height: 45px;
+    --problem-element-padding-top: 10px;
+}
+
+/* GENERAL SETTINGS --- */
+html,
+body,
+#viewDiv {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+}
+.esri-widget {
+    font-family: var(--font-family-one) !important;
+}
+.invisible {
+    visibility: collapse;
+}
+.esri-expand .esri-expand__content {
+    box-shadow: none;
+}
+.esri-view-height-xsmall
+.esri-ui-corner
+.esri-expand
+.esri-legend.esri-widget,
+.esri-view-height-small
+.esri-ui-corner
+.esri-expand
+.esri-legend.esri-widget {
+    max-height: 100%;
+}
+
+calcite-switch {
+    --calcite-color-brand: var(--color-one);
+    --calcite-color-status-info: #832116;
+    --calcite-color-brand-hover: #DA978F;
+}
+
+.hidden {
+    display: none;
+}
+
+/* LOADING SCREEN */
+#loading-screen {
+    position:fixed;
+    width:100%;
+    height:100%;
+    top: 0;
+    left: 0;
+    background: var(--color-one);
+    z-index: 100
+}
+#loading-screen .spinner-main {
+    width: 200px;
+    height: 200px;
+    display: inline-block;
+    overflow: hidden;
+    background: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* HEADER BAR */
+#title-bar {
+    position: absolute;
+    height: var(--title-bar-height);
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    color: var(--color-four);
+    z-index: 1;
+    background-color: var(--color-three);
+}
+#title-bar .logo-container {
+    margin-left: 0px;
+    height: var(--title-bar-height);  
+}
+#title-bar .logo-image {
+    height: var(--title-bar-height);
+    width: auto;
+}
+#title-bar .title-container {
+    height: var(--title-bar-height);
+    line-height: var(--title-bar-height);
+    font-size: 20px;
+    margin: 5px 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+}
+
+/* ABOUT WIDGET */
+.about-widget {
+    line-height: 1.5em;
+}
+.about-widget a {
+    color: var(--color-one);
+}
+.about-widget .custom-icon {
+    padding: 4px;
+    vertical-align: middle;
+    color: var(--color-one);
+    margin-left: -3px;
+    margin-top: -3px;
+}
+.about-widget h3 {
+    margin-block-start: 0em;
+    color: var(--color-one);
+}
+.about-widget h4 {
+    margin-block-end: .55em;
+    color: var(--color-four);
+}
+.about-widget .info-h5 {
+    color: var(--color-four);
+}
+.about-widget p {
+    margin-block-start: .45em;
+    margin-block-end: .45em;
+}
+
+/* LEGEN WIDGET */
+.esri-legend__layer-caption {
+    display: none;
+}
+.custom-legend-widget {
+    line-height: 1.5em;
+    font-family: var(--font-family-one);
+}
+.custom-legend-widget:last-child {
+    padding-bottom: 2.5em;
+}
+.custom-legend-widget h3 {
+    margin-block-start: 0em;
+    color: var(--color-one);
+}
+.custom-legend-widget h4 {
+    margin-block-end: .55em;
+    color: var(--color-one);
+}
+.custom-legend-widget img {
+    padding-top: 3px;
+    width: 20px;
+    height: 20px;
+}
+.custom-legend-widget td {
+    padding-right: 7px;
+}
+
+/* PROBLEMS - MAP PART */
+/* General */
+.overlay {
+    background: rgba(0,0,0,.5);
+    width: 100%;
+    display: block;
+    height: calc(100dvh - 45px);
+    position: absolute;
+    top: 45px;
+    right: 0px;
+    display: none;
+    justify-content: right;
+}
+.overlay.opened {
+    display: flex;
+}
+.problems-header {
+    text-align: right;
+    height: 35px;
+    padding-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--color-four);
+    border-bottom: 1px solid var(--color-five);
+}
+.problems-footer {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--color-five);
+}
+.problems-body {
+    color: var(--color-six);
+    padding-top: var(--problem-element-padding-top);
+    font-size: var(--font-size-one);
+    line-height: 1.1rem;
+}
+.problems-info {
+    color: var(--color-one);
+    vertical-align: middle;
+    gap: 5px;
+}
+.problems-info calcite-icon {
+    position: relative;
+    top: 2.5px;
+    left: 0px;
+}
+[icon="x"] {
+    cursor: pointer;
+}
+/* Button */
+.problems-map-container {
+    background-color: var(--color-three);
+    padding: 5px;
+    width: 260px;
+    text-align: center;
+}
+.problems-map-container.mobile-layout {
+    padding: 10px;
+    width: 100%;
+    bottom: 0px;
+    left: 0px;
+    box-sizing: border-box;
+}
+.problems-map-container calcite-button,
+.problems-footer calcite-button, 
+.form-result-container .form-result-btn calcite-button {
+    --calcite-color-brand: var(--color-one);
+    --calcite-color-brand-hover: var(--color-two);
+    --calcite-color-brand-press: var(--color-two);
+    margin: auto;
+    width: 100%;
+}
+.problems-map-container.mobile-layout calcite-button,
+.problems-footer calcite-button {
+    --calcite-color-brand: var(--color-one);
+    --calcite-color-brand-hover: var(--color-two);
+    --calcite-color-brand-press: var(--color-two);
+}
+/* Window */
+.problems-map-window {
+    background-color: var(--color-three);
+    font-family: var(--font-family-one);
+    padding: 0px 5px 5px 5px;
+}
+.problems-map-message-select {
+    text-align: left;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 0px;
+    margin-bottom: 10px;
+}
+.problems-map-message-select > div:nth-child(2) {
+    color: var(--color-four);
+}
+.problems-map-message-selected {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+.problems-map-window-header calcite-icon {
+    padding: 0px 0px 0px 5px;
+    color: var(--color-four);
+    cursor: pointer;
+}
+.problems-map-window-header calcite-button {
+    width: 140px;
+    margin: 0px;
+}
+.problems-map-window-header calcite-icon:hover {
+    color: var(--color-six);
+}
+.problems-map-check-icon {
+    --calcite-ui-icon-color: green;
+}
+.problems-map-action-bar {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    padding-top: 10px;
+}
+.problems-map-action-bar calcite-button {
+    margin: 0px;
+}
+#locate-tooltip {
+    --calcite-color-text-link: var(--color-four);
+    opacity: 0.5;
+    --calcite-color-brand-underline: transparent;
+}
+
+/* PROBLEMS - FORM PART */
+/* General */
+#problems-form-container {
+    box-sizing: border-box;
+    font-family: var(--font-family-one);
+    font-size: var(--font-size-one);
+    padding: 20px 15px;
+    background-color: white;
+    width: var(--panel-width);
+    height: 100%;
+    z-index: 2;
+    overflow-y: scroll;
+    position: relative;
+}
+.problem-loading, 
+.problem-result-screen {
+    position: fixed;
+    right: 0px;
+    top: 45px;
+    height: 100%;
+    width: var(--panel-width);
+    z-index: 3;
+    background-color: rgba(255,255,255,.8);
+}
+.problem-loading .spinner-main {
+    width: 200px;
+    height: 200px;
+    display: inline-block;
+    overflow: hidden;
+    background: none;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+}
+.problem-loading .spinner div {
+    border: 0.5em solid var(--color-one);
+    border-top-color: transparent;
+}
+#problems-form-container.mobile-layout, 
+.problem-loading.mobile-layout,
+.problem-result-screen.mobile-layout {
+    width: 100%;
+}
+.problem-result-screen {
+    background-color: var(--color-three);
+}
+.problems-form {
+    padding-top: var(--problem-element-padding-top);
+}
+.problems-form .problem-form-section {
+    margin: 0.5rem 0px;
+    padding: 0.5rem 0px;
+}
+.problems-form .problem-question {
+    margin-bottom: 8px;
+}
+.problems-form calcite-input-message {
+    --calcite-input-message-spacing-value: 10px;
+}
+/* Category */
+.problems-form .problem-category calcite-card {
+    width: 23.5%;
+    max-width: 160px;
+    --calcite-card-accent-color-selected: var(--color-one);
+}
+/* Attachment */
+#attachmentForm calcite-input-message {
+    word-break: break-all;
+}
+#attachmentRemove {
+    margin-top: 5px;
+} 
+/* Form result */
+.form-result-container {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-size: 1rem;
+    color: var(--color-four);
+}
+.form-result-container .form-result-image-container {
+    max-width: 200px;
+    width: 90%;
+    height: auto;
+}
+.form-result-container .form-result-image-container img {
+    width: 100%;
+    height: auto;
+}
+.form-result-container .form-result-text {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+/* LOADING SPINNER */
+@keyframes spinner {
+    0% { transform: translate(-50%,-50%) rotate(0deg); }
+    100% { transform: translate(-50%,-50%) rotate(360deg); }
+}
+.spinner div {
+    position: absolute;
+    width: 2.5em;
+    height: 2.5em;
+    border: 0.5em solid #ffffff;
+    border-top-color: transparent;
+    border-radius: 50%;
+}
+.spinner div {
+    animation: spinner 1s linear infinite;
+    top: 100px;
+    left: 100px
+}
+.spinner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform: translateZ(0) scale(1);
+    backface-visibility: hidden;
+    transform-origin: 0 0; /* see note above */
+}
+.spinner div { box-sizing: content-box; }
+
+/* MOBILE LAYOUT */
+@media only screen and (max-width: 544px) {
+    /* Disable shadows of widgets */
+    .custom-most-theme .esri-expand__content {
+        box-shadow: none !important;
+    }
+    /* Format title text */
+    #title-bar .title-container {
+        font-size: 15px;
+    }
+    /* Move widget panel down */
+    .esri-expand__container.esri-expand__container--expanded {
+        top: 45px !important;
+    }
+}
+/* Disable :hover on mobile device */
+@media (hover:none), (hover:on-demand) {
+    .esri-popup__header-container--button:hover {
+        background-color: transparent;
+    }
+    .esri-popup__button:hover {
+        background-color: transparent;
+    }
+}
+/* Disable outline in many app places */
+:focus, :focus-within, :focus::after {
+    outline: none !important;
+    outline-offset: 0px !important;
+}
+
+/* Problems category */
+@media (max-width: 650px) {
+    .problems-form .problem-category calcite-card {
+        width: calc(100% / 4 - .6rem);
+    }
+}
+
+@media (max-width: 450px) {
+    .problems-form .problem-category calcite-card {
+        width: calc(100% / 2 - .45rem);
+    }
+}

@@ -1,0 +1,13 @@
+# Dokumentace
+CHANGELOG.md
+CHANGELOG.pdf
+README.md
+README.pdf
+
+# JS Node Modules
+node_modules
+
+# Logování
+*.log
+
+

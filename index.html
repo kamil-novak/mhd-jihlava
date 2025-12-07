@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HGT080TLSL"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXX');
+    </script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>Hlášení závad města Jihlavy</title>
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-status-bar" content="#CA1517"/>
+    <meta name="theme-color" content="#CA1517"/>
+    <link rel="apple-touch-icon" href="images/pwa_icons/apple-touch-icon.png">
+    <!-- Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+    <!-- Styles -->
+    <link rel="stylesheet" href="https://js.arcgis.com/4.27/esri/themes/light/main.css"/>
+    <link rel="stylesheet" type="text/css" href="https://js.arcgis.com/calcite-components/2.6.0/calcite.css" />
+    <link rel="stylesheet" href="style/jihlava-theme.css"/>
+    <!-- Scripts -->
+    <script src="https://js.arcgis.com/4.27/"></script>
+    <script type="module" src="https://js.arcgis.com/calcite-components/2.6.0/calcite.esm.js"></script>
+    <script src="config/default.js"></script>
+  </head>
+
+  <body class="custom-most-theme">
+    <!-- Loading screen -->
+    <div id="loading-screen">
+      <div class="spinner-main">
+        <div class="spinner">
+          <div></div>
+        </div>
+      </div>
+    </div>
+    <!-- Header bar -->
+    <div id="title-bar" class="esri-widget">
+      <div class="logo-container"></div>
+      <div class="title-container"></div>
+    </div>
+    <!-- Map -->
+    <div id="viewDiv"></div>
+    <!-- Problem form -->
+    <div class="overlay">
+      <div id="problems-form-container">
+        <div class="problems-header">
+          <div class="problems-title">Detail závady</div>
+          <div class="problems-close">
+            <calcite-icon icon="x" scale="l" title="Zavřít" text-label="Zavřít"></calcite-icon>
+          </div>
+        </div>
+        <div class="problems-form">
+          <div class="problem-form-section problem-category">
+            <div class="problem-question">Zvolte typ závady</div>
+            <calcite-card-group label="label" scale="s"></calcite-card-group>
+            <calcite-input-message scale="m">Typ závady nezvolen.</calcite-input-message>
+          </div>
+          <div class="problem-form-section problem-description">
+            <div class="problem-question">Popište závadu</div>
+            <calcite-text-area class="problem-input" max-length="500" placeholder="Popis závady..." resize="none" rows="3" scale="l">
+            </calcite-text-area>
+            <calcite-input-message scale="m">Popis závady nevložen.</calcite-input-message>
+          </div>
+          <div class="problem-form-section problem-email">
+            <div class="problem-question">Uveďte váš e-mail</div>
+            <calcite-input class="problem-input" input-mode="email" scale="l" type="email" icon="envelope">
+            </calcite-input>
+            <calcite-input-message scale="m">e-mail nevložen.</calcite-input-message>
+          </div>
+          <div class="problem-form-section problem-attachment">
+            <calcite-label id="attachment-switch" layout="inline">
+              Připojit fotografii závady
+              <calcite-switch checked></calcite-switch>
+            </calcite-label>
+            <calcite-notice id="attachment-message" class="hidden" open icon="exclamation-mark-triangle" kind="warning" scale="s">
+              <div slot="title"></div>
+            </calcite-notice>
+            <div class="attachment-container">
+              <form id="attachmentForm">
+                <calcite-button icon-start="camera-plus" id="addAttachmentBtn" scale="l" width="full" kind="neutral">Přidat</calcite-button>
+                <input 
+                  id="attachmentInput" 
+                  type="file" 
+                  name="attachment" 
+                  accept="image/*" 
+                  style="display: none">
+                  <calcite-input-message scale="m">Fotografie nepřipojena.</calcite-input-message>
+                  <calcite-button
+                    id="attachmentRemove" 
+                    icon-start="trash"
+                    scale="s"
+                    kind="neutral" 
+                    style="display: none">Smazat fotografii
+                  </calcite-button>
+              </form>
+            </div>
+          </div>
+          <div class="problems-footer">
+            <calcite-button icon-start="check" scale="l" width="full" disabled>Nahlásit závadu</calcite-button>
+          </div>
+        </div>
+        <div class="problem-loading" style="display: none">
+          <div class="spinner-main">
+            <div class="spinner">
+              <div></div>
+            </div>
+          </div>
+        </div>
+        <div class="problem-result-screen" style="display: none"></div>
+      </div>
+    </div>
+  </body>
+  <script src="scripts/app.js"></script>
+</html>
