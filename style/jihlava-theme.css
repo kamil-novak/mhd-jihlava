@@ -167,236 +167,47 @@ calcite-switch {
     padding-right: 7px;
 }
 
-/* PROBLEMS - MAP PART */
-/* General */
-.overlay {
-    background: rgba(0,0,0,.5);
-    width: 100%;
-    display: block;
-    height: calc(100dvh - 45px);
-    position: absolute;
-    top: 45px;
-    right: 0px;
-    display: none;
-    justify-content: right;
-}
-.overlay.opened {
+/* POPUP */
+.popup-table-row {
     display: flex;
-}
-.problems-header {
-    text-align: right;
-    height: 35px;
-    padding-bottom: 4px;
-    display: flex;
-    justify-content: space-between;
+    font-size: 12px;
     align-items: center;
-    color: var(--color-four);
-    border-bottom: 1px solid var(--color-five);
 }
-.problems-footer {
-    margin-top: 20px;
-    padding-top: 20px;
-    border-top: 1px solid var(--color-five);
+.popup-table-row:nth-child(odd) {
+    background-color: #EDEDED;
 }
-.problems-body {
-    color: var(--color-six);
-    padding-top: var(--problem-element-padding-top);
-    font-size: var(--font-size-one);
-    line-height: 1.1rem;
+.popup-table-row:nth-child(even) {
+    background-color: #FBFBFB;
 }
-.problems-info {
-    color: var(--color-one);
-    vertical-align: middle;
-    gap: 5px;
-}
-.problems-info calcite-icon {
-    position: relative;
-    top: 2.5px;
-    left: 0px;
-}
-[icon="x"] {
-    cursor: pointer;
-}
-/* Button */
-.problems-map-container {
-    background-color: var(--color-three);
+.popup-table-row > div {
     padding: 5px;
-    width: 260px;
-    text-align: center;
+    width: 45%;
 }
-.problems-map-container.mobile-layout {
-    padding: 10px;
-    width: 100%;
-    bottom: 0px;
-    left: 0px;
-    box-sizing: border-box;
+.popup-table-row > div:first-child {
+    border-right: 2px solid #E1E1E1;
 }
-.problems-map-container calcite-button,
-.problems-footer calcite-button, 
-.form-result-container .form-result-btn calcite-button {
-    --calcite-color-brand: var(--color-one);
-    --calcite-color-brand-hover: var(--color-two);
-    --calcite-color-brand-press: var(--color-two);
-    margin: auto;
-    width: 100%;
-}
-.problems-map-container.mobile-layout calcite-button,
-.problems-footer calcite-button {
-    --calcite-color-brand: var(--color-one);
-    --calcite-color-brand-hover: var(--color-two);
-    --calcite-color-brand-press: var(--color-two);
-}
-/* Window */
-.problems-map-window {
-    background-color: var(--color-three);
-    font-family: var(--font-family-one);
-    padding: 0px 5px 5px 5px;
-}
-.problems-map-message-select {
-    text-align: left;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px 0px;
-    margin-bottom: 10px;
-}
-.problems-map-message-select > div:nth-child(2) {
+.popup-direction {
     color: var(--color-four);
+    font-weight: 300;
 }
-.problems-map-message-selected {
-    display: flex;
-    align-items: center;
-    gap: 3px;
+.popup-vehicle {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 20px 20px;
+    position: relative;
+    top: 4px;
 }
-.problems-map-window-header calcite-icon {
-    padding: 0px 0px 0px 5px;
-    color: var(--color-four);
-    cursor: pointer;
+.popup-autobus {
+    background-image: url('../images/icon-autobus.svg');
 }
-.problems-map-window-header calcite-button {
-    width: 140px;
-    margin: 0px;
-}
-.problems-map-window-header calcite-icon:hover {
-    color: var(--color-six);
-}
-.problems-map-check-icon {
-    --calcite-ui-icon-color: green;
-}
-.problems-map-action-bar {
-    display: flex;
-    justify-content: center;
-    gap: 5px;
-    padding-top: 10px;
-}
-.problems-map-action-bar calcite-button {
-    margin: 0px;
-}
-#locate-tooltip {
-    --calcite-color-text-link: var(--color-four);
-    opacity: 0.5;
-    --calcite-color-brand-underline: transparent;
+.popup-trolejbus {
+    background-image: url('../images/icon-trolejbus.svg');
 }
 
-/* PROBLEMS - FORM PART */
-/* General */
-#problems-form-container {
-    box-sizing: border-box;
-    font-family: var(--font-family-one);
-    font-size: var(--font-size-one);
-    padding: 20px 15px;
-    background-color: white;
-    width: var(--panel-width);
-    height: 100%;
-    z-index: 2;
-    overflow-y: scroll;
-    position: relative;
-}
-.problem-loading, 
-.problem-result-screen {
-    position: fixed;
-    right: 0px;
-    top: 45px;
-    height: 100%;
-    width: var(--panel-width);
-    z-index: 3;
-    background-color: rgba(255,255,255,.8);
-}
-.problem-loading .spinner-main {
-    width: 200px;
-    height: 200px;
-    display: inline-block;
-    overflow: hidden;
-    background: none;
-    position: relative;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    -webkit-transform: translate(-50%, -50%);
-    -moz-transform: translate(-50%, -50%);
-    -ms-transform: translate(-50%, -50%);
-    -o-transform: translate(-50%, -50%);
-}
-.problem-loading .spinner div {
-    border: 0.5em solid var(--color-one);
-    border-top-color: transparent;
-}
-#problems-form-container.mobile-layout, 
-.problem-loading.mobile-layout,
-.problem-result-screen.mobile-layout {
-    width: 100%;
-}
-.problem-result-screen {
-    background-color: var(--color-three);
-}
-.problems-form {
-    padding-top: var(--problem-element-padding-top);
-}
-.problems-form .problem-form-section {
-    margin: 0.5rem 0px;
-    padding: 0.5rem 0px;
-}
-.problems-form .problem-question {
-    margin-bottom: 8px;
-}
-.problems-form calcite-input-message {
-    --calcite-input-message-spacing-value: 10px;
-}
-/* Category */
-.problems-form .problem-category calcite-card {
-    width: 23.5%;
-    max-width: 160px;
-    --calcite-card-accent-color-selected: var(--color-one);
-}
-/* Attachment */
-#attachmentForm calcite-input-message {
-    word-break: break-all;
-}
-#attachmentRemove {
-    margin-top: 5px;
-} 
-/* Form result */
-.form-result-container {
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    font-size: 1rem;
-    color: var(--color-four);
-}
-.form-result-container .form-result-image-container {
-    max-width: 200px;
-    width: 90%;
-    height: auto;
-}
-.form-result-container .form-result-image-container img {
-    width: 100%;
-    height: auto;
-}
-.form-result-container .form-result-text {
-    text-align: center;
-    margin-bottom: 15px;
-}
+
 
 /* LOADING SPINNER */
 @keyframes spinner {
