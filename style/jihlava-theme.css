@@ -176,7 +176,16 @@ calcite-switch {
 .popup-table-row:nth-child(odd) {
     background-color: #EDEDED;
 }
+.popup-table table {
+    width: 100%;
+}
+.popup-table tbody > tr:nth-child(odd) {
+    background-color: #EDEDED;
+}
 .popup-table-row:nth-child(even) {
+    background-color: #FBFBFB;
+}
+.popup-table tbody > tr:nth-child(even) {
     background-color: #FBFBFB;
 }
 .popup-table-row > div {

@@ -6,6 +6,7 @@ let polohaLr;
 let zastavkyLr;
 let trasyLr;
 let trasyHighlightLr;
+let odjezdyLr;
 
 // Popups
 // Poloha vozidel
@@ -39,6 +40,30 @@ const popupPolohaZpozdeni = polohaPopupContentEl.querySelector("#popup-poloha-zp
 const popupPolohaRychlost = polohaPopupContentEl.querySelector("#popup-poloha-rychlost");
 const popupPolohaZastavka = polohaPopupContentEl.querySelector("#popup-poloha-zastavka");
 const popupPolohaBezbarierovost = polohaPopupContentEl.querySelector("#popup-poloha-bezbarierovost");
+
+// Zastávky
+const zastavkyPopupTitle = `
+  Zastávka
+`
+const zastavkyPopupContentEl = document.createElement("div");
+zastavkyPopupContentEl.innerHTML = `
+  <div class="popup-table">
+    <table>
+      <thead>
+        <tr>
+          <th>Linka</th>
+          <th>Cílová stanice</th>
+          <th>Odjezd</th>
+        </tr>
+      </thead>
+      <tbody id="popup-zastavky-odjezdy">
+      </tbody>
+    </table>
+  </div>
+`;
+const popupZastavkyOdjezdy = zastavkyPopupContentEl.querySelector("#popup-zastavky-odjezdy");
+
+
 
 // ------------------------------------
 // MODULY
@@ -74,6 +99,13 @@ document.querySelector("title").innerText = config.headerTitle;
 // ------------------------------------
 // ZÁKLADNÍ KOMPONENTY APLIKACE
 // ------------------------------------ 
+// Vrstva odjezdů
+odjezdyLr = new FeatureLayer({
+  url: config.zastavkoveOdjezdyLrUrl,
+  outFields: ["*"]
+});
+
+
 // Webová mapa
 const webmap = new WebMap({
   portalItem: {
@@ -169,6 +201,12 @@ view.when(() => {
   polohaLr.popupTemplate.title = polohaPopupTitle; 
   polohaLr.popupTemplate.content = polohaPopupContentEl;
 
+  zastavkyLr.popupEnabled = true;
+  zastavkyLr.popupTemplate.overwriteActions = true;
+  zastavkyLr.popupTemplate.outFields = ["*"];
+  zastavkyLr.popupTemplate.title = zastavkyPopupTitle; 
+  zastavkyLr.popupTemplate.content = zastavkyPopupContentEl;
+
 })
 
 reactiveUtils.watch(
@@ -177,6 +215,9 @@ reactiveUtils.watch(
     if (!updating && selectedFeature?.layer?.id === polohaLr.id) {
       await updatePolohaPopup(selectedFeature);
     }
+    if (!updating && selectedFeature?.layer?.id === zastavkyLr.id) {
+      await updateZastavkyPopup(selectedFeature);
+    }
   }
 );
 
@@ -184,34 +225,50 @@ reactiveUtils.watch(
 // ------------------------------------
 // FUNKCE
 // ------------------------------------
-// Školy pop-up
+// Update popup polohy
 const updatePolohaPopup = async (feature) => {
 
-  let popup = "Nepodařilo se načíst informace o vozidle."
-
   const query = {
+    returnGeometry: false,
     where: `${polohaLr.objectIdField} = ${feature.attributes[polohaLr.objectIdField]}`
   }
   
   const selectedFeatures = await polohaLr.queryFeatures(query);
+ 
   
-  if (selectedFeatures.features.length === 0) {
-    return popup
+  if (selectedFeatures.features.length > 0) {
+    const selectedFeature = selectedFeatures.features[0].attributes;
+ 
+    const zpozdeniAtt = selectedFeature.ZPOZDENI_MIN_FORMAT;
+    const rychlostAtt = selectedFeature.RYCHLOST_KM_H_FORMAT;
+    const zastavkaAtt = selectedFeature.POSLEDNI_ZASTAVKA_NAME;
+    const bezbarierovostAtt = selectedFeature.BEZBARIEROVOST_FORMAT;
+
+    popupPolohaZpozdeni.innerHTML = zpozdeniAtt;
+    popupPolohaRychlost.innerHTML = rychlostAtt;
+    popupPolohaZastavka.innerHTML = zastavkaAtt;
+    popupPolohaBezbarierovost.innerHTML = bezbarierovostAtt;
   }
-
-  const selectedFeature = selectedFeatures.features[0].attributes;
-  const zpozdeniAtt = selectedFeature.ZPOZDENI_MIN_FORMAT;
-  const rychlostAtt = selectedFeature.RYCHLOST_KM_H_FORMAT;
-  const zastavkaAtt = selectedFeature.POSLEDNI_ZASTAVKA_NAME;
-  const bezbarierovostAtt = selectedFeature.BEZBARIEROVOST_FORMAT;
-
-  popupPolohaZpozdeni.innerHTML = zpozdeniAtt;
-  popupPolohaRychlost.innerHTML = rychlostAtt;
-  popupPolohaZastavka.innerHTML = zastavkaAtt;
-  popupPolohaBezbarierovost.innerHTML = bezbarierovostAtt;
 }
 
+// Update popup zastávek
+const updateZastavkyPopup = async (feature) => {
 
+  const query = {
+    returnGeometry: false,
+    where: `${config.searchOdjezdyField} = '${feature.attributes[config.zastavkaIdField]}-${feature.attributes[config.zastavkaSmerField]}'`
+  }
+  
+  const selectedFeatures = await odjezdyLr.queryFeatures(query);
+  
+  popupZastavkyOdjezdy.innerHTML = "";
+
+  if (selectedFeatures.features.length > 0) {
+    selectedFeatures.features.forEach((feature) => {
+      popupZastavkyOdjezdy.innerHTML = popupZastavkyOdjezdy.innerHTML + feature.attributes[config.odjezdyField];
+    })
+  }
+}
 
 // Update layoutu při mobilním rozlišení
 const updateView = (breakpoint) => {

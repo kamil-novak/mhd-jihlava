@@ -27,6 +27,22 @@ const config = {
     // ID vrstvy tras MHD (v rámci webové mapy)
     trasyLrId: "19af81068fc-layer-5",
 
+    // URL tabulky zastávkových odjezdů (tabulka v rámci CDF Feature služby)
+    // Př. https://mapy.jihlava-city.cz/server1/rest/services/mhdJihlavaZastavky/FeatureServer/0
+    zastavkoveOdjezdyLrUrl: "https://mapy.jihlava-city.cz/server1/rest/services/mhdJihlavaZastavky/FeatureServer/0",
+
+    // Pole pro hledání zastávkových odjezdů v tabulce definované v zastavkoveOdjezdyLrUrl
+    searchOdjezdyField: "STOP_POST_ID",
+
+    // Pole formátovaných zastávkových odjezdů v tabulce definované v zastavkoveOdjezdyLrUrl
+    odjezdyField: "POPUP_ROW",
+
+    // Pole určující ID zastávky ve vrstvě definované v zastavkyLrId
+    zastavkaIdField: "elp_id",
+
+    // Pole určující směr zastávky ve vrstvě definované v zastavkyLrId
+    zastavkaSmerField: "elp_post",
+
     // Obsah widgetu o aplikaci (HTML)
     infoWidgetContent: "<div class='about-widget'><h3>Online mapa MHD v Jihlavě</h3><div><h4>Autoři</h4><p><a href='https://jihlava.cz' target='_blank'>Statutární město Jihlava</a><br>odbor informatiky<br>gis@jihlava-city.cz<br>Verze 1.0.0</p></div></div>",
 
