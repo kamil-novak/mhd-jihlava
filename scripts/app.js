@@ -1,11 +1,44 @@
 // ------------------------------------
 // GLOBÁLNÍ NASTAVENÍ
 // ------------------------------------ 
-// --- Globální proměnné ---
+// Globální proměnné
 let polohaLr;
 let zastavkyLr;
 let trasyLr;
 let trasyHighlightLr;
+
+// Popups
+// Poloha vozidel
+const polohaPopupTitle = `
+  <span class="popup-vehicle popup-{TYP_VOZIDLA}"></span>
+  Linka {LINKA} 
+  <span class="popup-direction">(směr {CILOVA_ZASTAVKA_NAME})</span>
+`
+const polohaPopupContentEl = document.createElement("div");
+polohaPopupContentEl.innerHTML = `
+  <div class="popup-table">
+    <div class="popup-table-row">
+      <div>Zpoždění</div>
+      <div id="popup-poloha-zpozdeni"></div>
+    </div>
+    <div class="popup-table-row">
+      <div>Rychlost / stav</div>
+      <div id="popup-poloha-rychlost"></div>
+    </div>
+    <div class="popup-table-row">
+      <div>Poslední projetá zastávka</div>
+      <div id="popup-poloha-zastavka"></div>
+    </div>
+    <div class="popup-table-row">
+      <div>Bezbariérovost</div>
+      <div id="popup-poloha-bezbarierovost"></div>
+    </div>
+  </div>
+`;
+const popupPolohaZpozdeni = polohaPopupContentEl.querySelector("#popup-poloha-zpozdeni");
+const popupPolohaRychlost = polohaPopupContentEl.querySelector("#popup-poloha-rychlost");
+const popupPolohaZastavka = polohaPopupContentEl.querySelector("#popup-poloha-zastavka");
+const popupPolohaBezbarierovost = polohaPopupContentEl.querySelector("#popup-poloha-bezbarierovost");
 
 // ------------------------------------
 // MODULY
@@ -128,26 +161,21 @@ view.when(() => {
   polohaLr = webmap.findLayerById(config.polohaVozidelLrId);
   zastavkyLr = webmap.findLayerById(config.zastavkyLrId);
   trasyLr = webmap.findLayerById(config.trasyLrId);
+
+  // Nastavení vrstev
   polohaLr.popupEnabled = true;
+  polohaLr.popupTemplate.overwriteActions = true;
+  polohaLr.popupTemplate.outFields = ["*"];
+  polohaLr.popupTemplate.title = polohaPopupTitle; 
+  polohaLr.popupTemplate.content = polohaPopupContentEl;
+
 })
 
 reactiveUtils.watch(
   () => [view.updating, view.popup?.selectedFeature],
   async ([updating, selectedFeature]) => {
     if (!updating && selectedFeature?.layer?.id === polohaLr.id) {
-      const content = await polohaPopup(selectedFeature);
-
-      const title = `
-        <span class="popup-vehicle popup-${selectedFeature.attributes.TYP_VOZIDLA}"></span>
-        Linka ${selectedFeature.attributes.LINKA} 
-        <span class="popup-direction">(směr ${selectedFeature.attributes.CILOVA_ZASTAVKA_NAME})</span>
-      `
-      polohaLr.popupTemplate = {
-        overwriteActions: true,
-        outFields: ["*"],
-        content,
-        title
-      }
+      await updatePolohaPopup(selectedFeature);
     }
   }
 );
@@ -157,7 +185,7 @@ reactiveUtils.watch(
 // FUNKCE
 // ------------------------------------
 // Školy pop-up
-const polohaPopup = async (feature) => {
+const updatePolohaPopup = async (feature) => {
 
   let popup = "Nepodařilo se načíst informace o vozidle."
 
@@ -177,32 +205,10 @@ const polohaPopup = async (feature) => {
   const zastavkaAtt = selectedFeature.POSLEDNI_ZASTAVKA_NAME;
   const bezbarierovostAtt = selectedFeature.BEZBARIEROVOST_FORMAT;
 
-  const content = `
-    <div class="popup-table">
-      <div class="popup-table-row">
-        <div>Zpoždění</div>
-        <div>${zpozdeniAtt}</div>
-      </div>
-      <div class="popup-table-row">
-        <div>Rychlost / stav</div>
-        <div>${rychlostAtt}</div>
-      </div>
-      <div class="popup-table-row">
-        <div>Poslední projetá zastávka</div>
-        <div>${zastavkaAtt}</div>
-      </div>
-      <div class="popup-table-row">
-        <div>Bezbariérovost</div>
-        <div>${bezbarierovostAtt}</div>
-      </div>
-    </div>
-  `
-  
-  popup = document.createElement("div");
-  popup.classList.add("school-popup")
-  popup.innerHTML = content;
-
-  return popup; 
+  popupPolohaZpozdeni.innerHTML = zpozdeniAtt;
+  popupPolohaRychlost.innerHTML = rychlostAtt;
+  popupPolohaZastavka.innerHTML = zastavkaAtt;
+  popupPolohaBezbarierovost.innerHTML = bezbarierovostAtt;
 }
 
 
