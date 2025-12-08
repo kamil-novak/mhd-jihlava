@@ -165,7 +165,7 @@ const infoWidget = new Expand({
   collapseTooltip: "Sbalit informace o aplikaci",
   group: "top-left",
   expandIcon: "question",
-  mode: "floating",
+  mode: "auto",
   label: "O aplikaci",
 });
 
