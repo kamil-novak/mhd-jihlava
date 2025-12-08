@@ -32,10 +32,6 @@ body,
 .invisible {
     visibility: collapse;
 }
-.esri-ui-corner .esri-widget--panel.esri-widget {
-    max-width: calc(100vw - 70px) !important;
-    max-height: calc(100vh - 16px) !important;
-}
 
 calcite-switch {
     --calcite-color-brand: var(--color-one);
