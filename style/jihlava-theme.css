@@ -32,7 +32,7 @@ body,
 .invisible {
     visibility: collapse;
 }
-.esri-widget--panel.esri-widget {
+.esri-ui-corner .esri-widget--panel.esri-widget {
     max-width: calc(100vw - 70px) !important;
     max-height: calc(100vh - 16px) !important;
 }
@@ -180,13 +180,13 @@ calcite-switch {
 }
 .popup-poloha.popup-vehicle {
     display: inline-block;
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     background-repeat: no-repeat;
     background-position: center;
-    background-size: 20px 20px;
+    background-size: 18px 18px;
     position: relative;
-    top: 4px;
+    top: 3.5px;
 }
 .popup-poloha.popup-vehicle.popup-autobus {
     background-image: url('../images/icon-autobus.svg');
@@ -204,21 +204,21 @@ calcite-switch {
     border-bottom: 1px solid var(--color-five);
 }
 .popup-zastavky .popup-zastavky-linky .zastavky-bezbar {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     background-repeat: no-repeat;
     background-position: center;
-    background-size: 20px 20px;
+    background-size: 18px 18px;
     background-image: url('../images/icon-bezbarierovost.svg');
 }
 .popup-zastavky .popup-zastavky-linky .zastavky-line {
     color: var(--color-three);
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     font-size: 11px;
     font-weight: 600;
     text-align: center;
-    line-height: 20px;
+    line-height: 18px;
     background-color: var(--color-one);
 }
 .popup-zastavky .popup-zastavky-odjezdy {
