@@ -1,4 +1,25 @@
 // ------------------------------------
+// MODULY
+// ------------------------------------ 
+const Popup = await $arcgis.import("@arcgis/core/widgets/Popup.js");
+const WebMap = await $arcgis.import("@arcgis/core/WebMap.js");
+const MapView = await $arcgis.import("@arcgis/core/views/MapView.js");
+const reactiveUtils = await $arcgis.import("@arcgis/core/core/reactiveUtils.js");
+const Expand = await $arcgis.import("@arcgis/core/widgets/Expand.js");
+const Home = await $arcgis.import("@arcgis/core/widgets/Home.js");
+const Locate = await $arcgis.import("@arcgis/core/widgets/Locate.js");
+const LocalBasemapsSource = await $arcgis.import("@arcgis/core/widgets/BasemapGallery/support/LocalBasemapsSource.js");
+const Basemap = await $arcgis.import("@arcgis/core/Basemap.js");
+const BasemapGallery = await $arcgis.import("@arcgis/core/widgets/BasemapGallery.js");
+const Search = await $arcgis.import("@arcgis/core/widgets/Search.js");
+const FeatureLayer = await $arcgis.import("@arcgis/core/layers/FeatureLayer.js");
+const Graphic = await $arcgis.import("@arcgis/core/Graphic.js");
+const GraphicsLayer = await $arcgis.import("@arcgis/core/layers/GraphicsLayer.js");
+const FeatureFilter = await $arcgis.import("@arcgis/core/layers/support/FeatureFilter.js");
+const FeatureEffect = await $arcgis.import("@arcgis/core/layers/support/FeatureEffect.js");
+
+
+// ------------------------------------
 // GLOBÁLNÍ NASTAVENÍ
 // ------------------------------------ 
 // Globální proměnné
@@ -67,26 +88,6 @@ const popupZastavkyOdjezdyTable = zastavkyPopupContentEl.querySelector(".popup-z
 const popupZastavkyOdjezdyRows = zastavkyPopupContentEl.querySelector("#popup-zastavky-odjezdy-rows");
 const popupZastavkyLinky = zastavkyPopupContentEl.querySelector(".popup-zastavky-linky");
 const popupZastavkyOdjezdyWarning = zastavkyPopupContentEl.querySelector("#popup-zastavky-odjezdy-warning");
-
-
-// ------------------------------------
-// MODULY
-// ------------------------------------ 
-const Popup = await $arcgis.import("@arcgis/core/widgets/Popup.js");
-const WebMap = await $arcgis.import("@arcgis/core/WebMap.js");
-const MapView = await $arcgis.import("@arcgis/core/views/MapView.js");
-const reactiveUtils = await $arcgis.import("@arcgis/core/core/reactiveUtils.js");
-const Expand = await $arcgis.import("@arcgis/core/widgets/Expand.js");
-const Home = await $arcgis.import("@arcgis/core/widgets/Home.js");
-const Locate = await $arcgis.import("@arcgis/core/widgets/Locate.js");
-const LocalBasemapsSource = await $arcgis.import("@arcgis/core/widgets/BasemapGallery/support/LocalBasemapsSource.js");
-const TileLayer = await $arcgis.import("@arcgis/core/layers/TileLayer.js");
-const Basemap = await $arcgis.import("@arcgis/core/Basemap.js");
-const BasemapGallery = await $arcgis.import("@arcgis/core/widgets/BasemapGallery.js");
-const Search = await $arcgis.import("@arcgis/core/widgets/Search.js");
-const FeatureLayer = await $arcgis.import("@arcgis/core/layers/FeatureLayer.js");
-const Graphic = await $arcgis.import("@arcgis/core/Graphic.js");
-const GraphicsLayer = await $arcgis.import("@arcgis/core/layers/GraphicsLayer.js");
 
 
 // ------------------------------------
@@ -234,6 +235,19 @@ reactiveUtils.watch(
   }
 );
 
+reactiveUtils.watch(
+  () => [view.popup?.selectedFeature, view.popup?.visible],
+  async ([selectedFeature, popupIsVisible]) => {
+    console.log(popupIsVisible);
+    if (selectedFeature?.layer?.id === polohaLr.id) {
+      await filterTrasa(selectedFeature);
+    }
+    if (!popupIsVisible || selectedFeature?.layer?.id !== polohaLr.id) {
+      await filterTrasa(null);
+    }
+  }
+);
+
 
 // ------------------------------------
 // FUNKCE
@@ -312,6 +326,25 @@ const updateZastavkyPopup = async (feature) => {
   else {
     popupZastavkyOdjezdyTable.style.display = "none";
     popupZastavkyOdjezdyWarning.style.display = "block";
+  }
+}
+
+// Zvýraznění trasy po identifikaci vozidla
+const filterTrasa = async (feature) => {
+  const linkaField = feature?.attributes?.[config.polohaLinkaField];
+  const trasyLrView = await view.whenLayerView(trasyLr);
+
+  if (linkaField) {
+    const filter = new FeatureFilter({
+      where: `trasa LIKE '%${linkaField}%'`,
+    })
+    trasyLrView.featureEffect = new FeatureEffect({
+      filter,
+      excludedEffect: "grayscale(100%) opacity(50%)"
+    });
+  }
+  else {
+    trasyLrView.featureEffect = null;
   }
 }
 

@@ -34,6 +34,9 @@ const config = {
     // Pole pro hledání zastávkových odjezdů v tabulce definované v zastavkoveOdjezdyLrUrl
     searchOdjezdyField: "STOP_POST_ID",
 
+    // Pole určující název linky ve vrstvě definované v polohaVozidelLrId
+    polohaLinkaField: "LINKA",
+
     // Pole formátovaných zastávkových odjezdů v tabulce definované v zastavkoveOdjezdyLrUrl
     odjezdyField: "POPUP_ROW",
 
