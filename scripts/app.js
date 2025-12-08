@@ -11,26 +11,26 @@ let odjezdyLr;
 // Popups
 // Poloha vozidel
 const polohaPopupTitle = `
-  <span class="popup-vehicle popup-{TYP_VOZIDLA}"></span>
+  <span class="popup-poloha popup-vehicle popup-{TYP_VOZIDLA}"></span>
   Linka {LINKA} 
-  <span class="popup-direction">(směr {CILOVA_ZASTAVKA_NAME})</span>
+  <span class="popup-poloha popup-direction">(směr {CILOVA_ZASTAVKA_NAME})</span>
 `
 const polohaPopupContentEl = document.createElement("div");
 polohaPopupContentEl.innerHTML = `
-  <div class="popup-table">
-    <div class="popup-table-row">
+  <div class="popup-poloha">
+    <div class="popup-poloha-row">
       <div>Zpoždění</div>
       <div id="popup-poloha-zpozdeni"></div>
     </div>
-    <div class="popup-table-row">
+    <div class="popup-poloha-row">
       <div>Rychlost / stav</div>
       <div id="popup-poloha-rychlost"></div>
     </div>
-    <div class="popup-table-row">
+    <div class="popup-poloha-row">
       <div>Poslední projetá zastávka</div>
       <div id="popup-poloha-zastavka"></div>
     </div>
-    <div class="popup-table-row">
+    <div class="popup-poloha-row">
       <div>Bezbariérovost</div>
       <div id="popup-poloha-bezbarierovost"></div>
     </div>
@@ -43,12 +43,13 @@ const popupPolohaBezbarierovost = polohaPopupContentEl.querySelector("#popup-pol
 
 // Zastávky
 const zastavkyPopupTitle = `
-  Zastávka
+  Zastávka {${config.zastavkaNazevField}}
 `
 const zastavkyPopupContentEl = document.createElement("div");
 zastavkyPopupContentEl.innerHTML = `
-  <div class="popup-table">
-    <table>
+  <div class="popup-zastavky">
+    <div class="popup-zastavky-linky"></div>
+    <table class="popup-zastavky-odjezdy">
       <thead>
         <tr>
           <th>Linka</th>
@@ -56,13 +57,16 @@ zastavkyPopupContentEl.innerHTML = `
           <th>Odjezd</th>
         </tr>
       </thead>
-      <tbody id="popup-zastavky-odjezdy">
+      <tbody id="popup-zastavky-odjezdy-rows">
       </tbody>
     </table>
+    <div id="popup-zastavky-odjezdy-warning">${config.noOdjezdyText}</div>
   </div>
 `;
-const popupZastavkyOdjezdy = zastavkyPopupContentEl.querySelector("#popup-zastavky-odjezdy");
-
+const popupZastavkyOdjezdyTable = zastavkyPopupContentEl.querySelector(".popup-zastavky-odjezdy");
+const popupZastavkyOdjezdyRows = zastavkyPopupContentEl.querySelector("#popup-zastavky-odjezdy-rows");
+const popupZastavkyLinky = zastavkyPopupContentEl.querySelector(".popup-zastavky-linky");
+const popupZastavkyOdjezdyWarning = zastavkyPopupContentEl.querySelector("#popup-zastavky-odjezdy-warning");
 
 
 // ------------------------------------
@@ -221,6 +225,15 @@ reactiveUtils.watch(
   }
 );
 
+reactiveUtils.watch(
+  () => [view.popup?.selectedFeature],
+  async ([selectedFeature]) => {
+    if (selectedFeature?.layer?.id === zastavkyLr.id) {
+      createLinesBarInZastavkyPopup(selectedFeature);
+    }
+  }
+);
+
 
 // ------------------------------------
 // FUNKCE
@@ -251,6 +264,28 @@ const updatePolohaPopup = async (feature) => {
   }
 }
 
+// Vytvoření seznamu linek v popup zastávek
+const createLinesBarInZastavkyPopup = (feature) => {
+  const linesFiels = feature.attributes[config.zastavkaLinkyField];
+  const bezbarierFiels = feature.attributes[config.zastavkaBezbarField];
+
+  popupZastavkyLinky.innerHTML = "";
+
+  let newHtml = "";
+
+  if (bezbarierFiels === "Ano") {
+    newHtml = `<div class="zastavky-bezbar"></div>`
+  }
+  if (linesFiels) {
+    const linesArr = linesFiels.split(" ");
+    linesArr.forEach((line) => {
+      newHtml = newHtml + `<div class="zastavky-line">${line}</div>`
+    })
+  }
+
+  popupZastavkyLinky.innerHTML = newHtml
+}
+
 // Update popup zastávek
 const updateZastavkyPopup = async (feature) => {
 
@@ -260,13 +295,23 @@ const updateZastavkyPopup = async (feature) => {
   }
   
   const selectedFeatures = await odjezdyLr.queryFeatures(query);
-  
-  popupZastavkyOdjezdy.innerHTML = "";
+    
+  popupZastavkyOdjezdyRows.innerHTML = null;
+  let newHtml = "";
 
   if (selectedFeatures.features.length > 0) {
+    if (popupZastavkyOdjezdyTable.style.display !== "table") { popupZastavkyOdjezdyTable.style.display = "table"; }
+    if (popupZastavkyOdjezdyWarning.style.display !== "none") { popupZastavkyOdjezdyWarning.style.display = "none"; }
+        
     selectedFeatures.features.forEach((feature) => {
-      popupZastavkyOdjezdy.innerHTML = popupZastavkyOdjezdy.innerHTML + feature.attributes[config.odjezdyField];
+      newHtml = newHtml + feature.attributes[config.odjezdyField];
     })
+    
+    popupZastavkyOdjezdyRows.innerHTML = newHtml;
+  }
+  else {
+    popupZastavkyOdjezdyTable.style.display = "none";
+    popupZastavkyOdjezdyWarning.style.display = "block";
   }
 }
 

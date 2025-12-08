@@ -168,38 +168,30 @@ calcite-switch {
 }
 
 /* POPUP */
-.popup-table-row {
+/* Poloha vozidel */
+.popup-poloha .popup-poloha-row {
     display: flex;
     font-size: 12px;
     align-items: center;
 }
-.popup-table-row:nth-child(odd) {
+.popup-poloha .popup-poloha-row:nth-child(odd) {
     background-color: #EDEDED;
 }
-.popup-table table {
-    width: 100%;
-}
-.popup-table tbody > tr:nth-child(odd) {
-    background-color: #EDEDED;
-}
-.popup-table-row:nth-child(even) {
+.popup-poloha .popup-poloha-row:nth-child(even) {
     background-color: #FBFBFB;
 }
-.popup-table tbody > tr:nth-child(even) {
-    background-color: #FBFBFB;
-}
-.popup-table-row > div {
+.popup-poloha .popup-poloha-row > div {
     padding: 5px;
     width: 45%;
 }
-.popup-table-row > div:first-child {
+.popup-poloha .popup-poloha-row > div:first-child {
     border-right: 2px solid #E1E1E1;
 }
-.popup-direction {
+.popup-poloha.popup-direction {
     color: var(--color-four);
     font-weight: 300;
 }
-.popup-vehicle {
+.popup-poloha.popup-vehicle {
     display: inline-block;
     width: 20px;
     height: 20px;
@@ -209,14 +201,83 @@ calcite-switch {
     position: relative;
     top: 4px;
 }
-.popup-autobus {
+.popup-poloha.popup-vehicle.popup-autobus {
     background-image: url('../images/icon-autobus.svg');
 }
-.popup-trolejbus {
+.popup-poloha.popup-vehicle.popup-trolejbus {
     background-image: url('../images/icon-trolejbus.svg');
 }
 
-
+/* Zastávkové odjezdy */
+.popup-zastavky .popup-zastavky-linky {
+    display: flex;
+    gap: 2px;
+    align-items: center;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--color-five);
+}
+.popup-zastavky .popup-zastavky-linky .zastavky-bezbar {
+    width: 20px;
+    height: 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 20px 20px;
+    background-image: url('../images/icon-bezbarierovost.svg');
+}
+.popup-zastavky .popup-zastavky-linky .zastavky-line {
+    color: var(--color-three);
+    width: 20px;
+    height: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    text-align: center;
+    line-height: 20px;
+    background-color: var(--color-one);
+}
+.popup-zastavky .popup-zastavky-odjezdy {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    font-size: 12px;
+    margin-top: 3px;
+}
+.popup-zastavky .popup-zastavky-odjezdy td,
+.popup-zastavky .popup-zastavky-odjezdy th {
+    padding: 5px;
+}
+.popup-zastavky .popup-zastavky-odjezdy thead th:last-child {
+    text-align: right;
+}
+.popup-zastavky .popup-zastavky-odjezdy tbody > tr:nth-child(odd) {
+    background-color: #EDEDED;
+}
+.popup-zastavky .popup-zastavky-odjezdy tbody > tr:nth-child(even) {
+    background-color: #FBFBFB;
+}
+.popup-zastavky .popup-zastavky-odjezdy tbody > tr:nth-child(even) {
+    background-color: #FBFBFB;
+}
+.popup-zastavky .popup-zastavky-odjezdy thead th {
+    text-align: left;
+}
+.popup-zastavky .popup-zastavky-odjezdy thead th:last-child {
+    text-align: right;
+}
+.popup-zastavky .popup-zastavky-odjezdy tbody td {
+    text-align: left;
+}
+.popup-zastavky .popup-zastavky-odjezdy tbody td:last-child {
+    text-align: right;
+}
+.popup-zastavky #popup-zastavky-odjezdy-warning {
+    display: none;
+    margin-top: 10px;
+    padding-left: 28px;
+    background-image: url('../images/icon-warning.svg');
+    background-repeat: no-repeat;
+    background-position: left center;
+    background-size: 20px 20px;
+}
 
 /* LOADING SPINNER */
 @keyframes spinner {
@@ -274,17 +335,4 @@ calcite-switch {
 :focus, :focus-within, :focus::after {
     outline: none !important;
     outline-offset: 0px !important;
-}
-
-/* Problems category */
-@media (max-width: 650px) {
-    .problems-form .problem-category calcite-card {
-        width: calc(100% / 4 - .6rem);
-    }
-}
-
-@media (max-width: 450px) {
-    .problems-form .problem-category calcite-card {
-        width: calc(100% / 2 - .45rem);
-    }
 }
