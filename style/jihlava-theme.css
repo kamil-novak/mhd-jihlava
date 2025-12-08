@@ -32,28 +32,15 @@ body,
 .invisible {
     visibility: collapse;
 }
-.esri-expand .esri-expand__content {
-    box-shadow: none;
-}
-.esri-view-height-xsmall
-.esri-ui-corner
-.esri-expand
-.esri-legend.esri-widget,
-.esri-view-height-small
-.esri-ui-corner
-.esri-expand
-.esri-legend.esri-widget {
-    max-height: 100%;
+.esri-widget--panel.esri-widget {
+    max-width: calc(100vw - 70px) !important;
+    max-height: calc(100vh - 16px) !important;
 }
 
 calcite-switch {
     --calcite-color-brand: var(--color-one);
     --calcite-color-status-info: #832116;
     --calcite-color-brand-hover: #DA978F;
-}
-
-.hidden {
-    display: none;
 }
 
 /* LOADING SCREEN */
@@ -316,10 +303,6 @@ calcite-switch {
     /* Format title text */
     #title-bar .title-container {
         font-size: 15px;
-    }
-    /* Move widget panel down */
-    .esri-expand__container.esri-expand__container--expanded {
-        top: 45px !important;
     }
 }
 /* Disable :hover on mobile device */

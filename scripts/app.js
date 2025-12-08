@@ -164,9 +164,15 @@ const infoWidget = new Expand({
   expandTooltip: "O aplikaci",
   collapseTooltip: "Sbalit informace o aplikaci",
   group: "top-left",
-  expandIcon: "question"
+  expandIcon: "question",
+  mode: "floating",
+  label: "O aplikaci",
 });
 
+// Načítání widgetů
+view.ui.add(homeWidget, "top-left", 0);
+view.ui.add(locateWidget, "top-left", 1);
+view.ui.add(infoWidget, "top-left", 0);
 
 
 // ------------------------------------
@@ -188,11 +194,6 @@ reactiveUtils.once(() => view.ready === true).then(() => {
 });
 
 view.when(() => {
-
-  // Načítání widgetů
-  view.ui.add(homeWidget, "top-left", 0);
-  view.ui.add(locateWidget, "top-left", 1);
-  view.ui.add(infoWidget, "top-left", 3);
 
   // Přístup k vrstvám
   polohaLr = webmap.findLayerById(config.polohaVozidelLrId);
@@ -238,7 +239,6 @@ reactiveUtils.watch(
 reactiveUtils.watch(
   () => [view.popup?.selectedFeature, view.popup?.visible],
   async ([selectedFeature, popupIsVisible]) => {
-    console.log(popupIsVisible);
     if (selectedFeature?.layer?.id === polohaLr.id) {
       await filterTrasa(selectedFeature);
     }
