@@ -213,7 +213,7 @@ view.when(() => {
   zastavkyLr.popupTemplate.overwriteActions = true;
   zastavkyLr.popupTemplate.outFields = ["*"];
   zastavkyLr.popupTemplate.title = zastavkyPopupTitle; 
-  zastavkyLr.popupTemplate.content = zastavkyPopupContentEl;
+  zastavkyLr.popupTemplate.content = updateZastavkyPopup;
 
 })
 
@@ -256,9 +256,8 @@ reactiveUtils.watch(
 // ------------------------------------
 // Update popup polohy
 const updatePolohaPopup = async (feature) => {
-const featureAtt = feature.attributes || feature.graphic.attributes;
+  const featureAtt = feature.attributes || feature.graphic.attributes;
 
-if (! polohaLr.objectIdField) return(polohaPopupContentEl);
   const query = {
     returnGeometry: false,
     where: `${polohaLr.objectIdField} = ${featureAtt[polohaLr.objectIdField]}`
@@ -281,7 +280,7 @@ if (! polohaLr.objectIdField) return(polohaPopupContentEl);
     popupPolohaBezbarierovost.innerHTML = bezbarierovostAtt;
   }
 
-  return(polohaPopupContentEl)
+  return(polohaPopupContentEl);
 }
 
 // Vytvoření seznamu linek v popup zastávek
@@ -308,10 +307,11 @@ const createLinesBarInZastavkyPopup = (feature) => {
 
 // Update popup zastávek
 const updateZastavkyPopup = async (feature) => {
+  const featureAtt = feature.attributes || feature.graphic.attributes;
 
   const query = {
     returnGeometry: false,
-    where: `${config.searchOdjezdyField} = '${feature.attributes[config.zastavkaIdField]}-${feature.attributes[config.zastavkaSmerField]}'`
+    where: `${config.searchOdjezdyField} = '${featureAtt[config.zastavkaIdField]}-${featureAtt[config.zastavkaSmerField]}'`
   }
   
   const selectedFeatures = await odjezdyLr.queryFeatures(query);
@@ -333,6 +333,8 @@ const updateZastavkyPopup = async (feature) => {
     popupZastavkyOdjezdyTable.style.display = "none";
     popupZastavkyOdjezdyWarning.style.display = "block";
   }
+
+  return(zastavkyPopupContentEl);
 }
 
 // Zvýraznění trasy po identifikaci vozidla
