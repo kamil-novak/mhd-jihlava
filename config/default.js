@@ -61,4 +61,16 @@ const config = {
     // Obsah widgetu o aplikaci (HTML)
     infoWidgetContent: "<div class='about-widget'><h3>Online mapa MHD v Jihlavě</h3><div><h4>Autoři</h4><p><a href='https://jihlava.cz' target='_blank'>Statutární město Jihlava</a><br>odbor informatiky<br>gis@jihlava-city.cz<br>Verze 1.0.0</p></div></div>",
 
+    // Zapnout automatické zobrazování informačního okna v situaci,
+    // kdy server nevrací žádná data polohy vozidel
+    noDataInfoEnable: true,
+
+    // Časový interval, ve kterém informační okno při nedostupnosti dat polohy vozidel, zobrazovat.
+    // Formát: 7:30, 21:35, 0:30 apod.
+    noDataInfoFrom: "5:00",
+    noDataInfoTo: "0:30",
+
+    // Text upozornění, pokud server nevrací čádná data polohy vozidel
+    noDataText: "Data aktuální polohy vozidel MHD nejsou momentálně dostupná. Omlouváme se."
+
 };

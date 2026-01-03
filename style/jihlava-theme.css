@@ -61,6 +61,46 @@ calcite-switch {
     transform: translate(-50%, -50%);
 }
 
+/* NO DATA SCREEN */
+#no-data-screen {
+    position: absolute;
+    justify-content: center;
+    align-items: center;
+    top: 0px;
+    right: 0px;
+    z-index: 50;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(1,1,1,0.6);
+    display: none;
+}
+#no-data-screen .no-data-container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    font-size: 0.9rem;
+    padding: 15px 10px;
+    background-color: var(--color-three);
+    max-width: 400px;
+    max-height: 100%;
+}
+#no-data-screen .no-data-message {
+    line-height: 1.3rem;
+    text-align: center;
+    color: var(--color-one);
+}
+#no-data-screen .no-data-close {
+    margin-top: 15px;
+    padding: 3px 10px;
+    color: var(--color-three);
+    background-color: var(--color-one);
+    cursor: pointer;   
+}
+#no-data-screen .no-data-close:hover {
+    background-color: var(--color-two);
+}
+
+
 /* HEADER BAR */
 #title-bar {
     position: absolute;

@@ -32,6 +32,7 @@ let zastavkyLr;
 let trasyLr;
 let trasyHighlightLr;
 let odjezdyLr;
+let noDataInfoWasClosed = false;
 
 // Popups
 // Poloha vozidel
@@ -104,6 +105,11 @@ document.querySelector(".logo-container").innerHTML =
   </a>`;
 document.querySelector("title").innerText = config.headerTitle;
 
+const noDataScreen = document.querySelector("#no-data-screen");
+const noDataMessage = noDataScreen.querySelector(".no-data-message");
+const noDataCloseBtn = noDataScreen.querySelector(".no-data-close");
+noDataMessage.innerText = config.noDataText;
+noDataCloseBtn.addEventListener("click", () => closeNoDataInfo());
 
 // ------------------------------------
 // ZÁKLADNÍ KOMPONENTY APLIKACE
@@ -287,6 +293,29 @@ reactiveUtils.watch(
   }
 );
 
+reactiveUtils.watch(
+  () => [view.updating],
+  async ([updating]) => {
+    if (!updating) {
+      if (config.noDataInfoEnable === true && isTimeInRange(config.noDataInfoFrom, config.noDataInfoTo)) {
+        let polohaCount;
+        try {
+          polohaCount = await polohaLr.queryFeatureCount();
+        }
+        catch {
+          polohaCount = 0;
+        }
+        if (polohaCount < 1 && (noDataScreen.style.display === "none" || noDataScreen.style.display === "") && noDataInfoWasClosed === false) {
+          noDataScreen.style.display = "flex";
+        }
+        if (polohaCount > 1 && noDataScreen.style.display === "flex") {
+          noDataScreen.style.display = "none"
+        }
+      }
+    }
+  }
+);
+
 
 // ------------------------------------
 // FUNKCE
@@ -425,6 +454,26 @@ const setStopUrlParameter = (feature) => {
     window.history.replaceState({}, '', url.toString());
   }
 }
+
+// Zavření informačního okna při nedostupnosti dat
+const closeNoDataInfo = () => {
+  noDataInfoWasClosed = true;
+  noDataScreen.style.display = "none";
+}
+
+// Kontrola, zda je aktuální čas v zadaném rozmezí (podporuje přechod přes půlnoc)
+const isTimeInRange = (fromStr, toStr, date = new Date()) => {
+  const toMinutes = s => {
+    const [h, m = "0"] = s.split(":");
+    return parseInt(h, 10) * 60 + parseInt(m, 10);
+  };
+  const from = toMinutes(fromStr);
+  const to = toMinutes(toStr);
+  const cur = date.getHours() * 60 + date.getMinutes();
+  if (from <= to) return cur >= from && cur <= to;
+  // rozmezí přechází přes půlnoc
+   return cur >= from || cur <= to;
+};
 
 // Update layoutu při mobilním rozlišení
 const updateView = (breakpoint) => {
