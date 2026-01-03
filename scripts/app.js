@@ -206,7 +206,7 @@ view.when(() => {
   polohaLr.popupTemplate.overwriteActions = true;
   polohaLr.popupTemplate.outFields = ["*"];
   polohaLr.popupTemplate.title = polohaPopupTitle; 
-  polohaLr.popupTemplate.content = polohaPopupContentEl;
+  polohaLr.popupTemplate.content = updatePolohaPopup;
 
   zastavkyLr.popupEnabled = true;
   zastavkyLr.popupTemplate = {};
@@ -256,28 +256,32 @@ reactiveUtils.watch(
 // ------------------------------------
 // Update popup polohy
 const updatePolohaPopup = async (feature) => {
+const featureAtt = feature.attributes || feature.graphic.attributes;
 
+if (! polohaLr.objectIdField) return(polohaPopupContentEl);
   const query = {
     returnGeometry: false,
-    where: `${polohaLr.objectIdField} = ${feature.attributes[polohaLr.objectIdField]}`
+    where: `${polohaLr.objectIdField} = ${featureAtt[polohaLr.objectIdField]}`
   }
   
   const selectedFeatures = await polohaLr.queryFeatures(query);
  
-  
   if (selectedFeatures.features.length > 0) {
-    const selectedFeature = selectedFeatures.features[0].attributes;
+    
+    const selectedFeatureAtt = selectedFeatures.features[0].attributes;
  
-    const zpozdeniAtt = selectedFeature.ZPOZDENI_MIN_FORMAT;
-    const rychlostAtt = selectedFeature.RYCHLOST_KM_H_FORMAT;
-    const zastavkaAtt = selectedFeature.POSLEDNI_ZASTAVKA_NAME;
-    const bezbarierovostAtt = selectedFeature.BEZBARIEROVOST_FORMAT;
+    const zpozdeniAtt = selectedFeatureAtt.ZPOZDENI_MIN_FORMAT;
+    const rychlostAtt = selectedFeatureAtt.RYCHLOST_KM_H_FORMAT;
+    const zastavkaAtt = selectedFeatureAtt.POSLEDNI_ZASTAVKA_NAME;
+    const bezbarierovostAtt = selectedFeatureAtt.BEZBARIEROVOST_FORMAT;
 
     popupPolohaZpozdeni.innerHTML = zpozdeniAtt;
     popupPolohaRychlost.innerHTML = rychlostAtt;
     popupPolohaZastavka.innerHTML = zastavkaAtt;
     popupPolohaBezbarierovost.innerHTML = bezbarierovostAtt;
   }
+
+  return(polohaPopupContentEl)
 }
 
 // Vytvoření seznamu linek v popup zastávek
