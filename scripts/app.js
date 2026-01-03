@@ -22,6 +22,10 @@ const FeatureEffect = await $arcgis.import("@arcgis/core/layers/support/FeatureE
 // ------------------------------------
 // GLOBÁLNÍ NASTAVENÍ
 // ------------------------------------ 
+// URL parametry
+const url = new URL(window.location.href);
+let stopParam = url.searchParams.get('stop');
+
 // Globální proměnné
 let polohaLr;
 let zastavkyLr;
@@ -193,7 +197,7 @@ reactiveUtils.once(() => view.ready === true).then(() => {
 
 });
 
-view.when(() => {
+view.when(async() => {
 
   // Přístup k vrstvám
   polohaLr = webmap.findLayerById(config.polohaVozidelLrId);
@@ -214,6 +218,27 @@ view.when(() => {
   zastavkyLr.popupTemplate.outFields = ["*"];
   zastavkyLr.popupTemplate.title = zastavkyPopupTitle; 
   zastavkyLr.popupTemplate.content = updateZastavkyPopup;
+
+  // URL parametry
+  if (stopParam) {
+    try {
+      const stopId = stopParam.split("-")?.[0];
+      const postId = stopParam.split("-")?.[1];
+      const stopExpr = 
+        `${config.zastavkaIdField} = ${stopId} AND ${config.zastavkaSmerField} = ${postId}` || null;
+      const stopQuery = {outFields: ["*"], returnGeometry: true, where: stopExpr};
+
+      const stopFeatures = await zastavkyLr.queryFeatures(stopQuery);
+      const existFeature = stopFeatures.features.length > 0 ? true : false;
+      if (existFeature) {
+        view.popup.open({features: stopFeatures.features});
+        view.goTo({target: stopFeatures.features, scale: 1000});
+      }
+    }
+    catch {
+      console.log("Nepodařilo se získat data o zastávkových odjezdech dle zadaného URL parametru");
+    }    
+  }
 
 })
 
@@ -311,27 +336,33 @@ const createLinesBarInZastavkyPopup = (feature) => {
   popupZastavkyLinky.innerHTML = newHtml
 }
 
-// Update popup zastávek
-const updateZastavkyPopup = async (feature) => {
-  const featureAtt = feature.attributes || feature.graphic.attributes;
-
+// Získání zastávkových odjezdů
+const getZastavkyData = async (featureAtt) => {
   const query = {
     returnGeometry: false,
     where: `${config.searchOdjezdyField} = '${featureAtt[config.zastavkaIdField]}-${featureAtt[config.zastavkaSmerField]}'`
   }
 
-  let selectedFeatures;
   try {
-    selectedFeatures = await odjezdyLr.queryFeatures(query);
+    const data = await odjezdyLr.queryFeatures(query);
+    return data;
   }
   catch {
     console.log("Chyba dotazu na zastávkové odjezdy");
+    return "ERROR";
   }
-  
+}
+
+// Update popup zastávek
+const updateZastavkyPopup = async (feature) => {
+  const featureAtt = feature.attributes || feature.graphic.attributes;
+
+  const selectedFeatures = await getZastavkyData(featureAtt);
+    
   popupZastavkyOdjezdyRows.innerHTML = null;
   let newHtml = "";
 
-  if (selectedFeatures && selectedFeatures.features.length > 0) {
+  if (selectedFeatures !== "ERROR" && selectedFeatures.features.length > 0) {
     if (popupZastavkyOdjezdyTable.style.display !== "table") { popupZastavkyOdjezdyTable.style.display = "table"; }
     if (popupZastavkyOdjezdyWarning.style.display !== "none") { popupZastavkyOdjezdyWarning.style.display = "none"; }
         
