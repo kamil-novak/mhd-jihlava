@@ -202,12 +202,14 @@ view.when(() => {
 
   // Nastavení vrstev
   polohaLr.popupEnabled = true;
+  polohaLr.popupTemplate = {};
   polohaLr.popupTemplate.overwriteActions = true;
   polohaLr.popupTemplate.outFields = ["*"];
   polohaLr.popupTemplate.title = polohaPopupTitle; 
   polohaLr.popupTemplate.content = polohaPopupContentEl;
 
   zastavkyLr.popupEnabled = true;
+  zastavkyLr.popupTemplate = {};
   zastavkyLr.popupTemplate.overwriteActions = true;
   zastavkyLr.popupTemplate.outFields = ["*"];
   zastavkyLr.popupTemplate.title = zastavkyPopupTitle; 
