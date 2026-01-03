@@ -263,8 +263,14 @@ const updatePolohaPopup = async (feature) => {
     where: `${polohaLr.objectIdField} = ${featureAtt[polohaLr.objectIdField]}`
   }
   
-  const selectedFeatures = await polohaLr.queryFeatures(query);
- 
+  let selectedFeatures;
+  try {
+    selectedFeatures = await polohaLr.queryFeatures(query);
+  }
+  catch {
+    console.log("Chyba dotazu na jízdní data");
+  }
+
   if (selectedFeatures.features.length > 0) {
     
     const selectedFeatureAtt = selectedFeatures.features[0].attributes;
@@ -313,13 +319,19 @@ const updateZastavkyPopup = async (feature) => {
     returnGeometry: false,
     where: `${config.searchOdjezdyField} = '${featureAtt[config.zastavkaIdField]}-${featureAtt[config.zastavkaSmerField]}'`
   }
+
+  let selectedFeatures;
+  try {
+    selectedFeatures = await odjezdyLr.queryFeatures(query);
+  }
+  catch {
+    console.log("Chyba dotazu na zastávkové odjezdy");
+  }
   
-  const selectedFeatures = await odjezdyLr.queryFeatures(query);
-    
   popupZastavkyOdjezdyRows.innerHTML = null;
   let newHtml = "";
 
-  if (selectedFeatures.features.length > 0) {
+  if (selectedFeatures && selectedFeatures.features.length > 0) {
     if (popupZastavkyOdjezdyTable.style.display !== "table") { popupZastavkyOdjezdyTable.style.display = "table"; }
     if (popupZastavkyOdjezdyWarning.style.display !== "none") { popupZastavkyOdjezdyWarning.style.display = "none"; }
         
