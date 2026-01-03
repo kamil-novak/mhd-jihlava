@@ -59,7 +59,7 @@ const config = {
     noOdjezdyText: "Pro tuto zastávku v tomto směru nebyly aktuálně nalezeny žádné zastávkové odjezdy.",
 
     // Obsah widgetu o aplikaci (HTML)
-    infoWidgetContent: "<div class='about-widget'><h3>Online mapa MHD v Jihlavě</h3><div><h4>Autoři</h4><p><a href='https://jihlava.cz' target='_blank'>Statutární město Jihlava</a><br>odbor informatiky<br>gis@jihlava-city.cz<br>Verze 1.0.0</p></div></div>",
+    infoWidgetContent: "<div class='about-widget'><h3>Online mapa MHD v Jihlavě</h3><div><h4>Autoři</h4><p><a href='https://jihlava.cz' target='_blank'>Statutární město Jihlava</a><br>odbor informatiky<br>gis@jihlava-city.cz<br>Verze 1.0.1</p></div></div>",
 
     // Zapnout automatické zobrazování informačního okna v situaci,
     // kdy server nevrací žádná data polohy vozidel
