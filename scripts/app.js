@@ -275,6 +275,18 @@ reactiveUtils.watch(
   }
 );
 
+reactiveUtils.watch(
+  () => [view.popup?.selectedFeature, view.popup?.visible],
+  async ([selectedFeature, popupIsVisible]) => {
+    if (selectedFeature?.layer?.id === zastavkyLr.id) {
+      setStopUrlParameter(selectedFeature);
+    }
+    if (!popupIsVisible || selectedFeature?.layer?.id !== zastavkyLr.id) {
+      setStopUrlParameter(null);
+    }
+  }
+);
+
 
 // ------------------------------------
 // FUNKCE
@@ -396,6 +408,21 @@ const filterTrasa = async (feature) => {
   }
   else {
     trasyLrView.featureEffect = null;
+  }
+}
+
+// Nastavení URL parametru zastávky
+const setStopUrlParameter = (feature) => {
+  if (feature) {
+    const stopId = feature?.attributes?.[config.zastavkaIdField];
+    const postId = feature?.attributes?.[config.zastavkaSmerField];
+    const stopPostId = `${stopId}-${postId}`;
+    url.searchParams.set("stop", stopPostId);
+    window.history.replaceState({}, '', url.toString());
+  }
+  else {
+    url.searchParams.delete('stop');
+    window.history.replaceState({}, '', url.toString());
   }
 }
 
