@@ -428,7 +428,7 @@ const filterTrasa = async (feature) => {
 
   if (linkaField) {
     const filter = new FeatureFilter({
-      where: `trasa LIKE '%${linkaField}%'`,
+      where: `trasa LIKE '%(${linkaField})%'`,
     })
     trasyLrView.featureEffect = new FeatureEffect({
       filter,
