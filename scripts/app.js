@@ -349,7 +349,7 @@ const updatePolohaPopup = async (feature) => {
     popupPolohaZpozdeni.innerHTML = zpozdeniAtt;
     popupPolohaRychlost.innerHTML = rychlostAtt;
     popupPolohaZastavka.innerHTML = zastavkaAtt;
-    popupPolohaBezbarierovost.innerHTML = bezbarierovostAtt;
+    popupPolohaBezbarierovost.innerHTML = bezbarierovostAtt + ` [DEV: CL ${selectedFeatureAtt.CISLO_LINKY}; L ${selectedFeatureAtt.LINKA}}`;
   }
 
   return(polohaPopupContentEl);
