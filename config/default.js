@@ -29,7 +29,7 @@ const config = {
 
     // URL tabulky zastávkových odjezdů (tabulka v rámci CDF Feature služby)
     // Př. https://mapy.jihlava-city.cz/server1/rest/services/mhdJihlavaZastavky/FeatureServer/0
-    zastavkoveOdjezdyLrUrl: "https://mapy.jihlava-city.cz/server1/rest/services/mhdJihlavaZastavky/FeatureServer/0",
+    zastavkoveOdjezdyLrUrl: "https://mapy.jihlava-city.cz/server1/rest/services/CDF/mhdJihlavaZastavky/FeatureServer/0",
 
     // Pole pro hledání zastávkových odjezdů v tabulce definované v zastavkoveOdjezdyLrUrl
     searchOdjezdyField: "STOP_POST_ID",
