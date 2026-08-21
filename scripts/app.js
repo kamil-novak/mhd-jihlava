@@ -206,7 +206,7 @@ reactiveUtils.once(() => view.ready === true).then(() => {
 view.when(async() => {
 
   // Přístup k vrstvám
-  polohaLrs = config.polohaVozidelLrId.map((polohaLrId) => webmap.findLayerById(polohaLrId));
+  polohaLrs = config.polohaVozidelLrIds.map((polohaLrId) => webmap.findLayerById(polohaLrId));
   zastavkyLr = webmap.findLayerById(config.zastavkyLrId);
   trasyLr = webmap.findLayerById(config.trasyLrId);
 
