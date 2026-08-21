@@ -18,8 +18,9 @@ const config = {
     // Portal URL
     portalUrl: "https://mapy.jihlava-city.cz/portal",
 
-    // ID vrstvy polohy vozidel MHD (v rámci webové mapy)
-    polohaVozidelLrId: "199cfe80b98-layer-4",
+    // ID vrstev polohy vozidel MHD (v rámci webové mapy)
+    // Vrstvy musí mít shodné atributy a referencovat shodnou Feature službu
+    polohaVozidelLrIds: ["199cfe80b98-layer-4", "4b0218bc9b03461ba8cfe40267497264"],
 
     // ID vrstvy zastávek MHD (v rámci webové mapy)
     zastavkyLrId: "19af80f47d5-layer-4",
@@ -34,7 +35,7 @@ const config = {
     // Pole pro hledání zastávkových odjezdů v tabulce definované v zastavkoveOdjezdyLrUrl
     searchOdjezdyField: "STOP_POST_ID",
 
-    // Pole určující název linky ve vrstvě definované v polohaVozidelLrId
+    // Pole určující název linky ve vrstvách definovaných v polohaVozidelLrId
     polohaLinkaField: "LINKA",
 
     // Pole formátovaných zastávkových odjezdů v tabulce definované v zastavkoveOdjezdyLrUrl
@@ -59,7 +60,7 @@ const config = {
     noOdjezdyText: "Pro tuto zastávku v tomto směru nebyly aktuálně nalezeny žádné zastávkové odjezdy.",
 
     // Obsah widgetu o aplikaci (HTML)
-    infoWidgetContent: "<div class='about-widget'><h3>Online mapa MHD v Jihlavě</h3><div><h4>Autoři</h4><p><a href='https://jihlava.cz' target='_blank'>Statutární město Jihlava</a><br>odbor informatiky<br>gis@jihlava-city.cz<br>Verze 1.0.2</p></div></div>",
+    infoWidgetContent: "<div class='about-widget'><h3>Online mapa MHD v Jihlavě</h3><div><h4>Autoři</h4><p><a href='https://jihlava.cz' target='_blank'>Statutární město Jihlava</a><br>odbor informatiky<br>gis@jihlava-city.cz<br>Verze 1.0.3</p></div></div>",
 
     // Zapnout automatické zobrazování informačního okna v situaci,
     // kdy server nevrací žádná data polohy vozidel
