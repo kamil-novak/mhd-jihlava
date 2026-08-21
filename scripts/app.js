@@ -27,7 +27,7 @@ const url = new URL(window.location.href);
 let stopParam = url.searchParams.get('stop');
 
 // Globální proměnné
-let polohaLr;
+let polohaLrs;
 let zastavkyLr;
 let trasyLr;
 let trasyHighlightLr;
@@ -206,17 +206,19 @@ reactiveUtils.once(() => view.ready === true).then(() => {
 view.when(async() => {
 
   // Přístup k vrstvám
-  polohaLr = webmap.findLayerById(config.polohaVozidelLrId);
+  polohaLrs = config.polohaVozidelLrId.map((polohaLrId) => webmap.findLayerById(polohaLrId));
   zastavkyLr = webmap.findLayerById(config.zastavkyLrId);
   trasyLr = webmap.findLayerById(config.trasyLrId);
 
   // Nastavení vrstev
-  polohaLr.popupEnabled = true;
-  polohaLr.popupTemplate = {};
-  polohaLr.popupTemplate.overwriteActions = true;
-  polohaLr.popupTemplate.outFields = ["*"];
-  polohaLr.popupTemplate.title = polohaPopupTitle; 
-  polohaLr.popupTemplate.content = updatePolohaPopup;
+  polohaLrs.forEach((polohaLr) => {
+    polohaLr.popupEnabled = true;
+    polohaLr.popupTemplate = {};
+    polohaLr.popupTemplate.overwriteActions = true;
+    polohaLr.popupTemplate.outFields = ["*"];
+    polohaLr.popupTemplate.title = polohaPopupTitle; 
+    polohaLr.popupTemplate.content = updatePolohaPopup;
+  });
 
   zastavkyLr.popupEnabled = true;
   zastavkyLr.popupTemplate = {};
@@ -251,7 +253,7 @@ view.when(async() => {
 reactiveUtils.watch(
   () => [view.updating, view.popup?.selectedFeature],
   async ([updating, selectedFeature]) => {
-    if (!updating && selectedFeature?.layer?.id === polohaLr.id) {
+    if (!updating && isPolohaFeature(selectedFeature)) {
       await updatePolohaPopup(selectedFeature);
     }
     if (!updating && selectedFeature?.layer?.id === zastavkyLr.id) {
@@ -272,10 +274,10 @@ reactiveUtils.watch(
 reactiveUtils.watch(
   () => [view.popup?.selectedFeature, view.popup?.visible],
   async ([selectedFeature, popupIsVisible]) => {
-    if (selectedFeature?.layer?.id === polohaLr.id) {
+    if (isPolohaFeature(selectedFeature)) {
       await filterTrasa(selectedFeature);
     }
-    if (!popupIsVisible || selectedFeature?.layer?.id !== polohaLr.id) {
+    if (!popupIsVisible || !isPolohaFeature(selectedFeature)) {
       await filterTrasa(null);
     }
   }
@@ -298,17 +300,19 @@ reactiveUtils.watch(
   async ([updating]) => {
     if (!updating) {
       if (config.noDataInfoEnable === true && isTimeInRange(config.noDataInfoFrom, config.noDataInfoTo)) {
-        let polohaCount;
-        try {
-          polohaCount = await polohaLr.queryFeatureCount();
-        }
-        catch {
-          polohaCount = 0;
-        }
+        const polohaCounts = await Promise.all(polohaLrs.map(async (polohaLr) => {
+          try {
+            return await polohaLr.queryFeatureCount();
+          }
+          catch {
+            return 0;
+          }
+        }));
+        const polohaCount = polohaCounts.reduce((count, layerCount) => count + layerCount, 0);
         if (polohaCount < 1 && (noDataScreen.style.display === "none" || noDataScreen.style.display === "") && noDataInfoWasClosed === false) {
           noDataScreen.style.display = "flex";
         }
-        if (polohaCount > 1 && noDataScreen.style.display === "flex") {
+        if (polohaCount > 0 && noDataScreen.style.display === "flex") {
           noDataScreen.style.display = "none"
         }
       }
@@ -323,15 +327,16 @@ reactiveUtils.watch(
 // Update popup polohy
 const updatePolohaPopup = async (feature) => {
   const featureAtt = feature.attributes || feature.graphic.attributes;
+  const featureLr = feature.layer || feature.graphic.layer;
 
   const query = {
     returnGeometry: false,
-    where: `${polohaLr.objectIdField} = ${featureAtt[polohaLr.objectIdField]}`
+    where: `${featureLr.objectIdField} = ${featureAtt[featureLr.objectIdField]}`
   }
   
   let selectedFeatures;
   try {
-    selectedFeatures = await polohaLr.queryFeatures(query);
+    selectedFeatures = await featureLr.queryFeatures(query);
   }
   catch {
     console.log("Chyba dotazu na jízdní data");
@@ -353,6 +358,11 @@ const updatePolohaPopup = async (feature) => {
   }
 
   return(polohaPopupContentEl);
+}
+
+// Kontrola, zda prvek pochází z některé vrstvy polohy vozidel
+const isPolohaFeature = (feature) => {
+  return polohaLrs?.some((polohaLr) => feature?.layer?.id === polohaLr.id);
 }
 
 // Vytvoření seznamu linek v popup zastávek
