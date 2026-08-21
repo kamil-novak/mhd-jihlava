@@ -19,6 +19,7 @@ const config = {
     portalUrl: "https://mapy.jihlava-city.cz/portal",
 
     // ID vrstev polohy vozidel MHD (v rámci webové mapy)
+    // Vrstvy musí mít shodné atributy a referencovat shodnou Feature službu
     polohaVozidelLrIds: ["199cfe80b98-layer-4", "4b0218bc9b03461ba8cfe40267497264"],
 
     // ID vrstvy zastávek MHD (v rámci webové mapy)
