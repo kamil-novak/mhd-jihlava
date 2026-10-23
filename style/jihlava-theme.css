@@ -100,7 +100,6 @@ calcite-switch {
     background-color: var(--color-two);
 }
 
-
 /* HEADER BAR */
 #title-bar {
     position: absolute;
@@ -188,6 +187,26 @@ calcite-switch {
 }
 .custom-legend-widget td {
     padding-right: 7px;
+}
+
+/* HLEDAT ZASTÁVKU WIDGET */
+#searchZastavkaBtn {
+    top: 15px;
+    left: 60px;
+    --calcite-button-background-color: var(--color-three);
+    --calcite-button-text-color: var(--color-four);
+    --calcite-button-shadow: 0 2px 8px 0 rgba(0, 0, 0, .1), 0 2px 8px 0 rgba(0, 0, 0, .04);
+}
+
+#searchZastavka {
+    overflow: auto;
+    display: none;
+    z-index: 1000;
+    top: 55px;
+    left: 60px;
+    max-width: 100vw;
+    max-height: calc(100% - 85px);
+    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, .1), 0 2px 8px 0 rgba(0, 0, 0, .04);
 }
 
 /* POPUP */

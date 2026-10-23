@@ -179,10 +179,25 @@ const infoWidget = new Expand({
   label: "O aplikaci",
 });
 
+// Vyhledávání zastávek
+const zastavkySearchBtnNode = document.createElement("calcite-button");
+const zastavkySearchNode = document.createElement("calcite-list");
+zastavkySearchNode.setAttribute("filter-enabled", "");
+zastavkySearchNode.setAttribute("selection-mode", "single");
+zastavkySearchNode.setAttribute("selection-appearance", "highlight");
+const zastavkySearchFeatures = new Map();
+zastavkySearchNode.style.display = "none";
+zastavkySearchNode.id = "searchZastavka";
+zastavkySearchBtnNode.innerText = "Hledat zastávku";
+zastavkySearchBtnNode.id = "searchZastavkaBtn";
+zastavkySearchBtnNode.setAttribute("icon-start", "magnifying-glass");
+
 // Načítání widgetů
+view.ui.add(zastavkySearchBtnNode, "manual", 0);
 view.ui.add(homeWidget, "top-left", 0);
 view.ui.add(locateWidget, "top-left", 1);
-view.ui.add(infoWidget, "top-left", 0);
+view.ui.add(infoWidget, "top-left", 2);
+view.ui.add(zastavkySearchNode, "manual");
 
 
 // ------------------------------------
@@ -226,6 +241,9 @@ view.when(async() => {
   zastavkyLr.popupTemplate.outFields = ["*"];
   zastavkyLr.popupTemplate.title = zastavkyPopupTitle; 
   zastavkyLr.popupTemplate.content = updateZastavkyPopup;
+
+  // Načtení zastávek do vyhledávacího seznamu
+  await loadZastavkySearch();
 
   // URL parametry
   if (stopParam) {
@@ -320,10 +338,79 @@ reactiveUtils.watch(
   }
 );
 
+zastavkySearchBtnNode.addEventListener("click", () => {
+  const isOpen = zastavkySearchNode.style.display !== "none";
+  zastavkySearchNode.style.display = isOpen ? "none" : "block";
+  zastavkySearchBtnNode.iconStart = isOpen ? "magnifying-glass" : "x";
+});
+
+zastavkySearchNode.addEventListener("calciteListChange", async (event) => {
+  const selectedItem = event.target.selectedItems?.[0];
+  if (!selectedItem) return;
+
+  const feature = zastavkySearchFeatures.get(String(selectedItem.value));
+  if (!feature) return;
+
+  zastavkySearchNode.style.display = "none";
+  zastavkySearchBtnNode.iconStart = "magnifying-glass";
+  selectedItem.selected = false;
+  zastavkySearchNode.filterText = "";
+
+  try {
+    await view.goTo({ target: feature, scale: 1000 });
+    view.popup.open({ features: [feature], location: feature.geometry });
+  }
+  catch (error) {
+    if (error.name !== "AbortError") console.error("Nepodařilo se přiblížit na zastávku:", error);
+  }
+});
+
 
 // ------------------------------------
 // FUNKCE
 // ------------------------------------
+// Načtení všech zastávek ze služby (včetně překročení maxRecordCount)
+async function loadZastavkySearch() {
+  zastavkySearchNode.loading = true;
+  try {
+    await zastavkyLr.load();
+    const objectIds = await zastavkyLr.queryObjectIds({ where: "1=1" });
+    if (!objectIds?.length) return;
+
+    const features = [];
+    const pageSize = 200;
+    for (let i = 0; i < objectIds.length; i += pageSize) {
+      const result = await zastavkyLr.queryFeatures({
+        objectIds: objectIds.slice(i, i + pageSize),
+        outFields: ["*"],
+        returnGeometry: true
+      });
+      features.push(...result.features);
+    }
+
+    features.sort((a, b) => String(a.attributes[config.zastavkaNazevField] ?? "")
+      .localeCompare(String(b.attributes[config.zastavkaNazevField] ?? ""), "cs"));
+
+    const fragment = document.createDocumentFragment();
+    for (const feature of features) {
+      const objectId = String(feature.attributes[zastavkyLr.objectIdField]);
+      zastavkySearchFeatures.set(objectId, feature);
+
+      const item = document.createElement("calcite-list-item");
+      item.label = String(feature.attributes[config.zastavkaNazevField] ?? "Bez názvu");
+      item.value = objectId;
+      fragment.appendChild(item);
+    }
+    zastavkySearchNode.replaceChildren(fragment);
+  }
+  catch (error) {
+    console.error("Nepodařilo se načíst seznam zastávek:", error);
+  }
+  finally {
+    zastavkySearchNode.loading = false;
+  }
+}
+
 // Update popup polohy
 const updatePolohaPopup = async (feature) => {
   const featureAtt = feature.attributes || feature.graphic.attributes;
