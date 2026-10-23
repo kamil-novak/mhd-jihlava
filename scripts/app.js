@@ -178,6 +178,13 @@ const infoWidget = new Expand({
   mode: "auto",
   label: "O aplikaci",
 });
+/* 
+  Bugfix JS API: Korektní zavření widgetu na mobilním rozlišení při kliku na křížek.
+  Až toto bude v JS API vyřešeno eventListener lze odstranit.
+*/
+document.addEventListener("calcitePanelClose", () => {
+  infoWidget.collapse();
+});
 
 // Vyhledávání zastávek
 const zastavkySearchBtnNode = document.createElement("calcite-button");
