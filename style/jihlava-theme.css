@@ -201,7 +201,7 @@ calcite-switch {
 #searchZastavka {
     overflow: auto;
     display: none;
-    z-index: 1000;
+    z-index: 500;
     top: 55px;
     left: 60px;
     max-width: 100vw;
