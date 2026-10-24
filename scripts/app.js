@@ -193,11 +193,25 @@ zastavkySearchNode.setAttribute("filter-enabled", "");
 zastavkySearchNode.setAttribute("selection-mode", "single");
 zastavkySearchNode.setAttribute("selection-appearance", "highlight");
 const zastavkySearchFeatures = new Map();
+
+
 zastavkySearchNode.style.display = "none";
 zastavkySearchNode.id = "searchZastavka";
 zastavkySearchBtnNode.innerText = "Hledat zastávku";
 zastavkySearchBtnNode.id = "searchZastavkaBtn";
 zastavkySearchBtnNode.setAttribute("icon-start", "magnifying-glass");
+
+// Oblíbené zastávky
+const FAVORITES_STORAGE_KEY = "jihlava-mhd-favorite-stops";
+const favoriteStops = (() => {
+  try {
+    const stored = JSON.parse(localStorage.getItem(FAVORITES_STORAGE_KEY) || "[]");
+    return new Set(Array.isArray(stored) ? stored : []);
+  }
+  catch {
+    return new Set();
+  }
+})();
 
 // Načítání widgetů
 view.ui.add(zastavkySearchBtnNode, "manual", 0);
@@ -347,6 +361,7 @@ reactiveUtils.watch(
 
 zastavkySearchBtnNode.addEventListener("click", () => {
   const isOpen = zastavkySearchNode.style.display !== "none";
+  if (!isOpen) sortZastavkySearchItems();
   zastavkySearchNode.style.display = isOpen ? "none" : "block";
   zastavkySearchBtnNode.iconStart = isOpen ? "magnifying-glass" : "x";
 });
@@ -376,6 +391,34 @@ zastavkySearchNode.addEventListener("calciteListChange", async (event) => {
 // ------------------------------------
 // FUNKCE
 // ------------------------------------
+// Uložení oblíbených zastávek do localStorage
+const saveFavoriteStops = () => {
+  localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify([...favoriteStops]));
+};
+
+// Řazení zastávek v seznamu
+const sortZastavkySearchItems = () => {
+  const items = [...zastavkySearchNode.children].filter(
+    (el) => el.tagName.toLowerCase() === "calcite-list-item"
+  );
+
+  items.sort((a, b) => {
+    const aFavorite = favoriteStops.has(String(a.value));
+    const bFavorite = favoriteStops.has(String(b.value));
+
+    if (aFavorite !== bFavorite) {
+      return aFavorite ? -1 : 1;
+    }
+
+    return (
+      a.label.localeCompare(b.label, "cs") ||
+      a.description.localeCompare(b.description, "cs")
+    );
+  });
+
+  zastavkySearchNode.append(...items);
+};
+
 // Načtení všech zastávek ze služby (včetně překročení maxRecordCount)
 async function loadZastavkySearch() {
   zastavkySearchNode.loading = true;
@@ -401,16 +444,54 @@ async function loadZastavkySearch() {
 
     const fragment = document.createDocumentFragment();
     for (const feature of features) {
-      const objectId = String(feature.attributes[zastavkyLr.objectIdField]);
-      zastavkySearchFeatures.set(objectId, feature);
+      const stopId = feature.attributes[config.zastavkaIdField];
+      const smerId = feature.attributes[config.zastavkaSmerIdField];
+      const stopKey = `${stopId}-${smerId}`;
+      zastavkySearchFeatures.set(stopKey, feature);
 
       const item = document.createElement("calcite-list-item");
       item.label = String(feature.attributes[config.zastavkaNazevField] ?? "Bez názvu");
-      item.description = String("Směr " + feature.attributes[config.zastavkaSmerNazevField] ?? "")
-      item.value = objectId;
+      item.description = String("Směr " + feature.attributes[config.zastavkaSmerNazevField] ?? "");
+      item.value = stopKey;
+
+      const favoriteAction = document.createElement("calcite-action");
+      favoriteAction.slot = "actions-end";
+
+      const updateFavoriteAction = () => {
+        const isFavorite = favoriteStops.has(stopKey);
+        favoriteAction.icon = isFavorite ? "star-f" : "star";
+        favoriteAction.text = isFavorite ? "Odebrat z oblíbených" : "Přidat do oblíbených";
+        favoriteAction.title = favoriteAction.text;
+      };
+
+      updateFavoriteAction();
+
+      favoriteAction.addEventListener("click", (event) => {
+        event.stopPropagation();
+
+        if (favoriteStops.has(stopKey)) {
+          favoriteStops.delete(stopKey);
+        }
+        else {
+          favoriteStops.add(stopKey);
+        }
+
+        try {
+          saveFavoriteStops();
+        }
+        catch (error) {
+          console.warn("Nepodařilo se uložit oblíbené zastávky:", error);
+        }
+
+        updateFavoriteAction();
+      });
+
+      item.appendChild(favoriteAction);
       fragment.appendChild(item);
     }
+
     zastavkySearchNode.replaceChildren(fragment);
+    sortZastavkySearchItems();
   }
   catch (error) {
     console.error("Nepodařilo se načíst seznam zastávek:", error);
