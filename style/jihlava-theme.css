@@ -331,6 +331,7 @@ calcite-switch {
     background-size: 20px 20px;
 }
 .popup-zastavky calcite-action.popup-zastavky-favorite {
+    margin-left: auto;
     --calcite-action-text-color: var(--color-four);
     --calcite-action-text-color-press: var(--color-four);
 }
