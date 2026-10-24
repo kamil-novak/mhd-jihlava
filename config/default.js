@@ -44,11 +44,18 @@ const config = {
     // Pole určující ID zastávky ve vrstvě definované v zastavkyLrId
     zastavkaIdField: "elp_id",
 
-    // Pole určující směr zastávky ve vrstvě definované v zastavkyLrId
-    zastavkaSmerField: "elp_post",
+    // Pole určující ID směru zastávky ve vrstvě definované v zastavkyLrId
+    zastavkaSmerIdField: "elp_post",
+
+    // Pole určující název směru zastávky ve vrstvě definované v zastavkyLrId
+    zastavkaSmerNazevField: "smer",
 
     // Pole určující název zastávky ve vrstvě definované v zastavkyLrId
     zastavkaNazevField: "nazev",
+
+    // Hodnoty v zastavkaSmerField, které vyloučí danou zastávku z vyhledávání
+    // Z vyhledávání jsou rovněž vyloučeny zastávky, které mají zastavkaSmerField rovný null
+    zastavkaSmerValuesToExcludeFromSearch: ["konečná"],
 
     // Pole určující bezbariérovost zastávky ve vrstvě definované v zastavkyLrId
     zastavkaBezbarField: "bezbar",

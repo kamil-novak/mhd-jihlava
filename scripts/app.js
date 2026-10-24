@@ -258,7 +258,7 @@ view.when(async() => {
       const stopId = stopParam.split("-")?.[0];
       const postId = stopParam.split("-")?.[1];
       const stopExpr = 
-        `${config.zastavkaIdField} = ${stopId} AND ${config.zastavkaSmerField} = ${postId}` || null;
+        `${config.zastavkaIdField} = ${stopId} AND ${config.zastavkaSmerIdField} = ${postId}` || null;
       const stopQuery = {outFields: ["*"], returnGeometry: true, where: stopExpr};
 
       const stopFeatures = await zastavkyLr.queryFeatures(stopQuery);
@@ -381,7 +381,8 @@ async function loadZastavkySearch() {
   zastavkySearchNode.loading = true;
   try {
     await zastavkyLr.load();
-    const objectIds = await zastavkyLr.queryObjectIds({ where: "1=1" });
+    const excludedStops = "('" + config.zastavkaSmerValuesToExcludeFromSearch.join("','") + "')";
+    const objectIds = await zastavkyLr.queryObjectIds({ where: `${config.zastavkaSmerNazevField} not in ${excludedStops}` });
     if (!objectIds?.length) return;
 
     const features = [];
@@ -405,6 +406,7 @@ async function loadZastavkySearch() {
 
       const item = document.createElement("calcite-list-item");
       item.label = String(feature.attributes[config.zastavkaNazevField] ?? "Bez názvu");
+      item.description = String("Směr " + feature.attributes[config.zastavkaSmerNazevField] ?? "")
       item.value = objectId;
       fragment.appendChild(item);
     }
@@ -485,7 +487,7 @@ const createLinesBarInZastavkyPopup = (feature) => {
 const getZastavkyData = async (featureAtt) => {
   const query = {
     returnGeometry: false,
-    where: `${config.searchOdjezdyField} = '${featureAtt[config.zastavkaIdField]}-${featureAtt[config.zastavkaSmerField]}'`
+    where: `${config.searchOdjezdyField} = '${featureAtt[config.zastavkaIdField]}-${featureAtt[config.zastavkaSmerIdField]}'`
   }
 
   try {
@@ -548,7 +550,7 @@ const filterTrasa = async (feature) => {
 const setStopUrlParameter = (feature) => {
   if (feature) {
     const stopId = feature?.attributes?.[config.zastavkaIdField];
-    const postId = feature?.attributes?.[config.zastavkaSmerField];
+    const postId = feature?.attributes?.[config.zastavkaSmerIdField];
     const stopPostId = `${stopId}-${postId}`;
     url.searchParams.set("stop", stopPostId);
     window.history.replaceState({}, '', url.toString());
