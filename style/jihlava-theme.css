@@ -251,6 +251,13 @@ calcite-switch {
 }
 
 /* Zastávkové odjezdy */
+.popup-zastavky.popup-title-smer {
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--color-four);
+    margin-top: 2px;
+}    
+
 .popup-zastavky .popup-zastavky-linky {
     display: flex;
     gap: 2px;

@@ -69,7 +69,7 @@ const popupPolohaBezbarierovost = polohaPopupContentEl.querySelector("#popup-pol
 
 // Zastávky
 const zastavkyPopupTitle = `
-  Zastávka {${config.zastavkaNazevField}}
+  Zastávka {${config.zastavkaNazevField}} <div class="popup-zastavky popup-title-smer">směr {${config.zastavkaSmerNazevField}}</div>
 `
 const zastavkyPopupContentEl = document.createElement("div");
 zastavkyPopupContentEl.innerHTML = `
