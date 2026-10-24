@@ -197,7 +197,6 @@ calcite-switch {
     --calcite-button-text-color: var(--color-four);
     --calcite-button-shadow: 0 2px 8px 0 rgba(0, 0, 0, .1), 0 2px 8px 0 rgba(0, 0, 0, .04);
 }
-
 #searchZastavka {
     overflow: auto;
     display: none;
@@ -207,6 +206,10 @@ calcite-switch {
     max-width: 100vw;
     max-height: calc(100% - 85px);
     box-shadow: 0 2px 8px 0 rgba(0, 0, 0, .1), 0 2px 8px 0 rgba(0, 0, 0, .04);
+}
+#searchZastavka calcite-action.favourite {
+    --calcite-action-text-color: var(--color-one);
+    --calcite-action-text-color-press: var(--color-one);
 }
 
 /* POPUP */
@@ -327,6 +330,14 @@ calcite-switch {
     background-position: left center;
     background-size: 20px 20px;
 }
+.popup-zastavky calcite-action.popup-zastavky-favorite {
+    --calcite-action-text-color: var(--color-four);
+    --calcite-action-text-color-press: var(--color-four);
+}
+.popup-zastavky calcite-action.popup-zastavky-favorite.popup-zastavky-favourite {
+    --calcite-action-text-color: var(--color-one);
+    --calcite-action-text-color-press: var(--color-one);
+}
 
 /* LOADING SPINNER */
 @keyframes spinner {
@@ -344,7 +355,7 @@ calcite-switch {
 .spinner div {
     animation: spinner 1s linear infinite;
     top: 100px;
-    left: 100px
+    left: 100px;
 }
 .spinner {
     width: 100%;

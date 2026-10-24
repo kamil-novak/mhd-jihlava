@@ -396,6 +396,55 @@ const saveFavoriteStops = () => {
   localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify([...favoriteStops]));
 };
 
+// Aktualizace ikony oblíbených (v seznamu hledání i popupu)
+const updateFavoriteAction = (action, stopKey) => {
+  const isFavorite = favoriteStops.has(stopKey);
+
+  action.icon = isFavorite ? "star-f" : "star";
+  action.classList.toggle("favourite", isFavorite);
+
+  // Barva hvězdičky v popupu pouze při zařazení do oblíbených
+  if (action.classList.contains("popup-zastavky-favorite")) {
+    action.classList.toggle("popup-zastavky-favourite", isFavorite);
+  }
+
+  action.text = isFavorite ? "Odebrat z oblíbených" : "Přidat do oblíbených";
+
+  action.title = action.text;
+};
+
+// Synchronizace hvězdiček mezi seznamem hledání a popup
+const refreshFavoriteActions = (stopKey) => {
+  const listItem = [...zastavkySearchNode.children]
+    .find((item) => item.tagName.toLowerCase() === "calcite-list-item" && String(item.value) === stopKey);
+  const listAction = listItem?.querySelector('calcite-action[slot="actions-end"]');
+  if (listAction) updateFavoriteAction(listAction, stopKey);
+
+  const popupAction = popupZastavkyLinky.querySelector("calcite-action.popup-zastavky-favorite");
+  if (popupAction?.dataset.stopKey === stopKey) {
+    updateFavoriteAction(popupAction, stopKey);
+  }
+};
+
+// Přidání/odebrání oblíbené zastávky (seznam hledání i popup)
+const toggleFavoriteStop = (stopKey) => {
+  if (favoriteStops.has(stopKey)) {
+    favoriteStops.delete(stopKey);
+  }
+  else {
+    favoriteStops.add(stopKey);
+  }
+
+  try {
+    saveFavoriteStops();
+  }
+  catch (error) {
+    console.warn("Nepodařilo se uložit oblíbené zastávky:", error);
+  }
+
+  refreshFavoriteActions(stopKey);
+};
+
 // Řazení zastávek v seznamu
 const sortZastavkySearchItems = () => {
   const items = [...zastavkySearchNode.children].filter(
@@ -457,33 +506,11 @@ async function loadZastavkySearch() {
       const favoriteAction = document.createElement("calcite-action");
       favoriteAction.slot = "actions-end";
 
-      const updateFavoriteAction = () => {
-        const isFavorite = favoriteStops.has(stopKey);
-        favoriteAction.icon = isFavorite ? "star-f" : "star";
-        favoriteAction.text = isFavorite ? "Odebrat z oblíbených" : "Přidat do oblíbených";
-        favoriteAction.title = favoriteAction.text;
-      };
-
-      updateFavoriteAction();
+      updateFavoriteAction(favoriteAction, stopKey);
 
       favoriteAction.addEventListener("click", (event) => {
         event.stopPropagation();
-
-        if (favoriteStops.has(stopKey)) {
-          favoriteStops.delete(stopKey);
-        }
-        else {
-          favoriteStops.add(stopKey);
-        }
-
-        try {
-          saveFavoriteStops();
-        }
-        catch (error) {
-          console.warn("Nepodařilo se uložit oblíbené zastávky:", error);
-        }
-
-        updateFavoriteAction();
+        toggleFavoriteStop(stopKey);
       });
 
       item.appendChild(favoriteAction);
@@ -561,7 +588,26 @@ const createLinesBarInZastavkyPopup = (feature) => {
     })
   }
 
-  popupZastavkyLinky.innerHTML = newHtml
+  popupZastavkyLinky.innerHTML = newHtml;
+
+  // Přidat do oblíbených
+  const stopId = feature.attributes[config.zastavkaIdField];
+  const smerId = feature.attributes[config.zastavkaSmerIdField];
+  const stopKey = `${stopId}-${smerId}`;
+
+  const favoriteAction = document.createElement("calcite-action");
+  favoriteAction.classList.add("popup-zastavky-favorite");
+  favoriteAction.dataset.stopKey = stopKey;
+  favoriteAction.scale = "s";
+
+  updateFavoriteAction(favoriteAction, stopKey);
+
+  favoriteAction.addEventListener("click", (event) => {
+    event.stopPropagation();
+    toggleFavoriteStop(stopKey);
+  });
+
+  popupZastavkyLinky.appendChild(favoriteAction);
 }
 
 // Získání zastávkových odjezdů
