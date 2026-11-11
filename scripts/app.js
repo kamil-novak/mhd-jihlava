@@ -190,6 +190,7 @@ document.addEventListener("calcitePanelClose", () => {
 const zastavkySearchBtnNode = document.createElement("calcite-button");
 const zastavkySearchNode = document.createElement("calcite-list");
 zastavkySearchNode.setAttribute("filter-enabled", "");
+zastavkySearchNode.filterProps = ["label"];
 zastavkySearchNode.setAttribute("selection-mode", "single");
 zastavkySearchNode.setAttribute("selection-appearance", "highlight");
 const zastavkySearchFeatures = new Map();
