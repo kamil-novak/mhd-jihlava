@@ -205,7 +205,7 @@ calcite-switch {
     top: 55px;
     left: 60px;
     width: 300px;
-    max-width: calc(100vw - 70px);
+    max-width: calc(100vw - 75px);
     max-height: calc(100dvh - 140px);
     overflow-y: auto;
     overscroll-behavior: contain;
