@@ -383,6 +383,10 @@ calcite-switch {
     #title-bar .title-container {
         font-size: 15px;
     }
+    /* Search list bottom margin */
+    #searchZastavka {
+        max-height: calc(100dvh - 85px);
+    }
 }
 /* Disable :hover on mobile device */
 @media (hover:none), (hover:on-demand) {
