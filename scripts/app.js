@@ -362,7 +362,10 @@ reactiveUtils.watch(
 
 zastavkySearchBtnNode.addEventListener("click", () => {
   const isOpen = zastavkySearchNode.style.display !== "none";
-  if (!isOpen) sortZastavkySearchItems();
+  if (!isOpen) {
+    sortZastavkySearchItems();
+    zastavkySearchNode.setFocus();
+  }
   zastavkySearchNode.style.display = isOpen ? "none" : "block";
   zastavkySearchBtnNode.iconStart = isOpen ? "magnifying-glass" : "x";
 });
