@@ -199,14 +199,18 @@ calcite-switch {
     --calcite-button-shadow: 0 2px 8px 0 rgba(0, 0, 0, .1), 0 2px 8px 0 rgba(0, 0, 0, .04);
 }
 #searchZastavka {
-    overflow: auto;
+    position: fixed;
     display: none;
     z-index: 500;
     top: 55px;
     left: 60px;
-    max-width: 100vw;
-    max-height: max(0px, calc(var(--viewport-height, 100dvh) - 85px));
-    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, .1), 0 2px 8px 0 rgba(0, 0, 0, .04);
+    width: 300px;
+    max-width: calc(100vw - 70px);
+    max-height: calc(100dvh - 140px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, .1),
+                0 2px 8px 0 rgba(0, 0, 0, .04);
 }
 #searchZastavka calcite-action.favourite {
     --calcite-action-text-color: var(--color-one);
